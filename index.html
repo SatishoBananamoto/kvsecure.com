@@ -10,6 +10,7 @@
 <meta property="og:description" content="ChaCha20-Poly1305 encryption. MCP integration. Your AI agent never sees your secrets.">
 <meta property="og:type" content="website">
 <meta property="og:url" content="https://kvsecure.com">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>&#x1F510;</text></svg>">
 <style>
 /* ── Variables ─────────────────────────────────────────── */
 :root {
@@ -71,8 +72,19 @@ nav {
 .nav-toggle { display: none; background: none; border: none; color: var(--text); font-size: 1.5rem; cursor: pointer; }
 
 /* ── Hero ──────────────────────────────────────────────── */
-.hero { padding-top: 140px; padding-bottom: 80px; }
-.hero-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 60px; align-items: center; }
+.hero {
+  padding-top: 140px; padding-bottom: 80px;
+  position: relative; overflow: hidden;
+}
+.hero::before {
+  content: "";
+  position: absolute;
+  top: -120px; left: 50%; transform: translateX(-50%);
+  width: 800px; height: 600px;
+  background: radial-gradient(ellipse, rgba(34,211,238,0.08) 0%, transparent 70%);
+  pointer-events: none;
+}
+.hero-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 60px; align-items: center; position: relative; }
 .hero h1 { font-size: 3rem; line-height: 1.15; font-weight: 800; letter-spacing: -0.02em; margin-bottom: 20px; }
 .hero h1 span { color: var(--accent); }
 .hero .sub { font-size: 1.15rem; color: var(--text-muted); line-height: 1.7; margin-bottom: 32px; max-width: 480px; }
@@ -89,6 +101,27 @@ nav {
   border-radius: 8px; font-size: 0.95rem; transition: border-color 0.15s;
 }
 .btn-outline:hover { border-color: var(--text-muted); text-decoration: none; }
+
+/* ── Works With ───────────────────────────────────────── */
+.works-with {
+  text-align: center; padding: 40px 0 60px;
+}
+.works-with p {
+  font-size: 0.85rem; color: var(--text-muted); text-transform: uppercase;
+  letter-spacing: 0.1em; margin-bottom: 20px;
+}
+.editor-badges {
+  display: flex; justify-content: center; gap: 32px; flex-wrap: wrap;
+}
+.editor-badge {
+  display: flex; align-items: center; gap: 10px;
+  padding: 10px 20px;
+  background: var(--bg-card); border: 1px solid var(--border); border-radius: 8px;
+  font-size: 0.9rem; color: var(--text); font-weight: 500;
+  transition: border-color 0.2s;
+}
+.editor-badge:hover { border-color: var(--accent); }
+.editor-badge svg { width: 20px; height: 20px; }
 
 /* ── Terminal ──────────────────────────────────────────── */
 .terminal {
@@ -114,12 +147,21 @@ nav {
   font-family: var(--mono); font-size: 0.85rem; line-height: 1.75;
   overflow-x: auto; color: var(--text);
 }
-.terminal .p  { color: var(--text-muted); }  /* prompt $ */
-.terminal .c  { color: var(--accent); }      /* command keyword */
-.terminal .v  { color: var(--green); }       /* value / success */
-.terminal .k  { color: var(--yellow); }      /* key name */
-.terminal .o  { color: var(--text-muted); }  /* output text */
-.terminal .r  { color: var(--red); }         /* warning */
+.terminal .p  { color: var(--text-muted); }
+.terminal .c  { color: var(--accent); }
+.terminal .v  { color: var(--green); }
+.terminal .k  { color: var(--yellow); }
+.terminal .o  { color: var(--text-muted); }
+.terminal .r  { color: var(--red); }
+
+/* Hero terminal typing cursor */
+#hero-terminal pre { min-height: 220px; }
+.cursor-blink {
+  display: inline-block; width: 8px; height: 16px;
+  background: var(--accent); vertical-align: text-bottom;
+  animation: blink 1s step-end infinite;
+}
+@keyframes blink { 50% { opacity: 0; } }
 
 /* ── Install ───────────────────────────────────────────── */
 .install { text-align: center; background: var(--bg-card); border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); }
@@ -148,7 +190,7 @@ nav {
 .features-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; }
 .feature-card {
   background: var(--bg-card); border: 1px solid var(--border); border-radius: 10px;
-  padding: 28px; transition: border-color 0.2s;
+  padding: 28px; transition: border-color 0.2s, transform 0.2s;
 }
 .feature-card:hover { border-color: var(--accent); }
 .feature-icon { font-size: 1.8rem; margin-bottom: 14px; }
@@ -178,7 +220,7 @@ nav {
 .pricing-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 24px; max-width: 720px; margin: 0 auto; }
 .price-card {
   background: var(--bg-card); border: 1px solid var(--border); border-radius: 12px;
-  padding: 36px 28px; position: relative;
+  padding: 36px 28px; position: relative; transition: border-color 0.2s, transform 0.2s;
 }
 .price-card.featured { border-color: var(--accent); }
 .price-card .badge {
@@ -213,6 +255,15 @@ footer {
 .footer-links a:hover { color: var(--text); }
 .footer-tagline { width: 100%; text-align: center; color: var(--text-muted); font-size: 0.8rem; margin-top: 16px; }
 
+/* ── Scroll Reveal ─────────────────────────────────────── */
+.reveal {
+  opacity: 0; transform: translateY(30px);
+  transition: opacity 0.6s ease, transform 0.6s ease;
+}
+.reveal.visible {
+  opacity: 1; transform: translateY(0);
+}
+
 /* ── Responsive ────────────────────────────────────────── */
 @media (max-width: 1023px) {
   .hero-grid { grid-template-columns: 1fr; gap: 40px; }
@@ -231,12 +282,16 @@ footer {
   .nav-links.open { display: flex; }
   .nav-toggle { display: block; }
   .footer-inner { justify-content: center; text-align: center; }
+  .editor-badges { gap: 16px; }
 }
 
 /* ── Animations (respects reduced-motion) ──────────────── */
 @media (prefers-reduced-motion: no-preference) {
-  .feature-card, .price-card { transition: transform 0.2s, border-color 0.2s; }
   .feature-card:hover, .price-card:hover { transform: translateY(-2px); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .reveal { opacity: 1; transform: none; transition: none; }
+  .cursor-blink { animation: none; }
 }
 </style>
 </head>
@@ -275,31 +330,40 @@ footer {
           </a>
         </div>
       </div>
-      <div class="terminal">
+      <div class="terminal" id="hero-terminal">
         <div class="terminal-bar">
           <div class="dot dot-r"></div><div class="dot dot-y"></div><div class="dot dot-g"></div>
           <span>terminal</span>
         </div>
-<pre><span class="p">$</span> <span class="c">pip install</span> kv-secrets
-<span class="p">$</span> <span class="c">kv init</span>
-<span class="o">  kv &mdash; initialized</span>
-<span class="o">  Master key   .secrets/key  </span><span class="r">(DO NOT COMMIT)</span>
-
-<span class="p">$</span> <span class="c">kv set</span> <span class="k">API_KEY</span>=<span class="v">sk-live-abc123</span>
-<span class="o">  set API_KEY  (dev)  [encrypted]</span>
-
-<span class="p">$</span> <span class="c">kv setup</span> cursor
-<span class="v">  MCP configured for Cursor</span>
-
-<span class="o">  Your AI agent can now run code</span>
-<span class="o">  with secrets &mdash; without seeing them.</span></pre>
+        <pre id="typed-output"></pre>
       </div>
     </div>
   </div>
 </section>
 
+<!-- ── Works With ──────────────────────────────────────── -->
+<div class="works-with reveal">
+  <div class="container">
+    <p>Works with your favorite AI editor</p>
+    <div class="editor-badges">
+      <div class="editor-badge">
+        <svg viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
+        Cursor
+      </div>
+      <div class="editor-badge">
+        <svg viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg>
+        Claude Code
+      </div>
+      <div class="editor-badge">
+        <svg viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg>
+        VS Code
+      </div>
+    </div>
+  </div>
+</div>
+
 <!-- ── Install ─────────────────────────────────────────── -->
-<section class="install" id="install">
+<section class="install reveal" id="install">
   <div class="container">
     <h2>Install in seconds</h2>
     <div class="install-cmd">
@@ -327,7 +391,7 @@ footer {
 </section>
 
 <!-- ── Features ────────────────────────────────────────── -->
-<section class="features" id="features">
+<section class="features reveal" id="features">
   <div class="container">
     <h2>Built for developers who vibe with AI</h2>
     <div class="features-grid">
@@ -373,7 +437,7 @@ footer {
 </section>
 
 <!-- ── How It Works ────────────────────────────────────── -->
-<section class="how" id="how">
+<section class="how reveal" id="how">
   <div class="container">
     <h2>How it works with your AI editor</h2>
     <div class="how-steps">
@@ -425,7 +489,7 @@ footer {
 </section>
 
 <!-- ── Pricing ─────────────────────────────────────────── -->
-<section class="pricing" id="pricing">
+<section class="pricing reveal" id="pricing">
   <div class="container">
     <h2>Simple pricing</h2>
     <p class="sub">Free for individuals. One flat price for teams.</p>
@@ -480,6 +544,137 @@ footer {
     </div>
   </div>
 </footer>
+
+<!-- ── Scripts ─────────────────────────────────────────── -->
+<script>
+// ── Typing animation for hero terminal ──
+(function() {
+  const lines = [
+    { text: '$ ', cls: 'p', delay: 0 },
+    { text: 'pip install', cls: 'c', delay: 0 },
+    { text: ' kv-secrets', cls: '', delay: 0 },
+    { text: '\n', delay: 300 },
+    { text: '$ ', cls: 'p', delay: 200 },
+    { text: 'kv init', cls: 'c', delay: 0 },
+    { text: '\n', delay: 200 },
+    { text: '  kv \u2014 initialized\n', cls: 'o', delay: 100, instant: true },
+    { text: '  Master key   .secrets/key  ', cls: 'o', delay: 0, instant: true },
+    { text: '(DO NOT COMMIT)', cls: 'r', delay: 0, instant: true },
+    { text: '\n\n', delay: 400 },
+    { text: '$ ', cls: 'p', delay: 0 },
+    { text: 'kv set', cls: 'c', delay: 0 },
+    { text: ' ', cls: '', delay: 0 },
+    { text: 'API_KEY', cls: 'k', delay: 0 },
+    { text: '=', cls: '', delay: 0 },
+    { text: 'sk-live-abc123', cls: 'v', delay: 0 },
+    { text: '\n', delay: 200 },
+    { text: '  set API_KEY  (dev)  [encrypted]\n\n', cls: 'o', delay: 100, instant: true },
+    { text: '$ ', cls: 'p', delay: 0 },
+    { text: 'kv setup', cls: 'c', delay: 0 },
+    { text: ' cursor', cls: '', delay: 0 },
+    { text: '\n', delay: 200 },
+    { text: '  MCP configured for Cursor\n\n', cls: 'v', delay: 100, instant: true },
+    { text: '  Your AI agent can now run code\n', cls: 'o', delay: 50, instant: true },
+    { text: '  with secrets \u2014 without seeing them.', cls: 'o', delay: 0, instant: true },
+  ];
+
+  const out = document.getElementById('typed-output');
+  if (!out) return;
+
+  // Respect reduced motion
+  if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+    // Just dump everything instantly
+    lines.forEach(l => {
+      if (l.text === '\n' || l.text === '\n\n') {
+        out.appendChild(document.createTextNode(l.text));
+      } else {
+        const span = document.createElement('span');
+        if (l.cls) span.className = l.cls;
+        span.textContent = l.text;
+        out.appendChild(span);
+      }
+    });
+    return;
+  }
+
+  let lineIdx = 0;
+  let charIdx = 0;
+  let currentSpan = null;
+  const cursor = document.createElement('span');
+  cursor.className = 'cursor-blink';
+  cursor.textContent = '\u00A0';
+  out.appendChild(cursor);
+
+  function typeNext() {
+    if (lineIdx >= lines.length) {
+      cursor.remove();
+      return;
+    }
+    const seg = lines[lineIdx];
+
+    // Newlines
+    if (seg.text === '\n' || seg.text === '\n\n') {
+      out.insertBefore(document.createTextNode(seg.text), cursor);
+      lineIdx++;
+      charIdx = 0;
+      currentSpan = null;
+      setTimeout(typeNext, seg.delay || 100);
+      return;
+    }
+
+    // Instant output lines (command responses)
+    if (seg.instant) {
+      const span = document.createElement('span');
+      if (seg.cls) span.className = seg.cls;
+      span.textContent = seg.text;
+      out.insertBefore(span, cursor);
+      lineIdx++;
+      charIdx = 0;
+      currentSpan = null;
+      setTimeout(typeNext, seg.delay || 50);
+      return;
+    }
+
+    // Typed characters
+    if (!currentSpan) {
+      currentSpan = document.createElement('span');
+      if (seg.cls) currentSpan.className = seg.cls;
+      out.insertBefore(currentSpan, cursor);
+    }
+
+    if (charIdx < seg.text.length) {
+      currentSpan.textContent += seg.text[charIdx];
+      charIdx++;
+      setTimeout(typeNext, 35 + Math.random() * 25);
+    } else {
+      lineIdx++;
+      charIdx = 0;
+      currentSpan = null;
+      setTimeout(typeNext, seg.delay || 0);
+    }
+  }
+
+  // Start after a short delay
+  setTimeout(typeNext, 600);
+})();
+
+// ── Scroll reveal with IntersectionObserver ──
+(function() {
+  if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+  const observer = new IntersectionObserver(function(entries) {
+    entries.forEach(function(entry) {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('visible');
+        observer.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.1 });
+
+  document.querySelectorAll('.reveal').forEach(function(el) {
+    observer.observe(el);
+  });
+})();
+</script>
 
 </body>
 </html>
