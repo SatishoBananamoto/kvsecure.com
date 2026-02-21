@@ -1,0 +1,361 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Guide — kv Encrypted Secrets Management</title>
+<meta name="description" content="Complete guide to using kv — installation, setup, MCP integration, commands, and best practices for encrypted secrets management.">
+<link rel="canonical" href="https://kvsecure.com/guide.html">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>&#x1F510;</text></svg>">
+<style>
+:root {
+  --bg: #0a0a0f; --bg-card: #12121a; --bg-terminal: #0d1117; --bg-terminal-bar: #161b22;
+  --text: #e4e4e7; --text-muted: #71717a;
+  --accent: #22d3ee; --accent-dim: rgba(34,211,238,0.12); --border: #27272a;
+  --green: #4ade80; --yellow: #fbbf24; --red: #f87171;
+  --font: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  --mono: "SF Mono", "Cascadia Code", "JetBrains Mono", Consolas, monospace;
+}
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+body { font-family: var(--font); background: var(--bg); color: var(--text); line-height: 1.6; -webkit-font-smoothing: antialiased; }
+a { color: var(--accent); text-decoration: none; }
+a:hover { text-decoration: underline; }
+:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+
+.container { max-width: 800px; margin: 0 auto; padding: 0 24px; }
+
+/* Nav */
+nav { position: fixed; top: 0; left: 0; right: 0; z-index: 100; background: rgba(10,10,15,0.85); backdrop-filter: blur(12px); border-bottom: 1px solid var(--border); }
+.nav-inner { max-width: 1120px; margin: 0 auto; padding: 0 24px; display: flex; align-items: center; justify-content: space-between; height: 60px; }
+.nav-logo { font-size: 1.5rem; font-weight: 700; color: var(--accent); font-family: var(--mono); }
+.nav-links { display: flex; gap: 28px; align-items: center; }
+.nav-links a { color: var(--text-muted); font-size: 0.9rem; }
+.nav-links a:hover { color: var(--text); text-decoration: none; }
+.nav-links a.active { color: var(--accent); }
+.nav-gh { display: inline-flex; align-items: center; gap: 6px; padding: 6px 14px; border: 1px solid var(--border); border-radius: 6px; font-size: 0.85rem; color: var(--text); }
+.nav-gh:hover { border-color: var(--text-muted); text-decoration: none; }
+
+/* Page header */
+.page-header { padding-top: 120px; padding-bottom: 20px; text-align: center; }
+.page-header h1 { font-size: 2.5rem; font-weight: 800; margin-bottom: 12px; }
+.page-header p { color: var(--text-muted); font-size: 1.1rem; }
+
+/* Table of contents */
+.toc { padding: 20px 0 40px; }
+.toc ul { list-style: none; display: flex; flex-wrap: wrap; gap: 12px; justify-content: center; }
+.toc a { display: inline-block; padding: 6px 16px; border: 1px solid var(--border); border-radius: 6px; font-size: 0.85rem; color: var(--text-muted); }
+.toc a:hover { border-color: var(--accent); color: var(--accent); text-decoration: none; }
+
+/* Guide content */
+.guide { padding: 0 0 80px; }
+.guide-section { margin-bottom: 48px; }
+.guide-section h2 { font-size: 1.6rem; font-weight: 700; margin-bottom: 16px; padding-bottom: 8px; border-bottom: 1px solid var(--border); color: var(--accent); }
+.guide-section h3 { font-size: 1.15rem; font-weight: 600; margin: 24px 0 12px; }
+.guide-section p { color: var(--text-muted); margin-bottom: 16px; line-height: 1.7; }
+.guide-section ul, .guide-section ol { color: var(--text-muted); margin-bottom: 16px; padding-left: 24px; }
+.guide-section li { margin-bottom: 8px; line-height: 1.6; }
+.guide-section code { font-family: var(--mono); background: var(--bg-card); padding: 2px 6px; border-radius: 4px; font-size: 0.85rem; color: var(--accent); }
+.guide-section strong { color: var(--text); }
+
+/* Terminal blocks */
+.terminal { background: var(--bg-terminal); border: 1px solid var(--border); border-radius: 10px; overflow: hidden; margin: 16px 0 24px; }
+.terminal-bar { display: flex; align-items: center; gap: 7px; padding: 10px 14px; background: var(--bg-terminal-bar); border-bottom: 1px solid var(--border); }
+.dot { width: 10px; height: 10px; border-radius: 50%; }
+.dot-r { background: #ff5f57; } .dot-y { background: #febc2e; } .dot-g { background: #28c840; }
+.terminal-bar span { margin-left: 8px; font-size: 0.7rem; color: var(--text-muted); font-family: var(--mono); }
+.terminal pre { padding: 16px; margin: 0; font-family: var(--mono); font-size: 0.82rem; line-height: 1.75; overflow-x: auto; color: var(--text); }
+.terminal .p { color: var(--text-muted); }
+.terminal .c { color: var(--accent); }
+.terminal .v { color: var(--green); }
+.terminal .k { color: var(--yellow); }
+.terminal .o { color: var(--text-muted); }
+.terminal .r { color: var(--red); }
+
+/* Tip boxes */
+.tip { background: var(--accent-dim); border-left: 3px solid var(--accent); padding: 14px 18px; border-radius: 0 8px 8px 0; margin: 16px 0 24px; font-size: 0.9rem; color: var(--text); }
+.tip strong { color: var(--accent); }
+.warning { background: rgba(251,191,36,0.08); border-left: 3px solid var(--yellow); padding: 14px 18px; border-radius: 0 8px 8px 0; margin: 16px 0 24px; font-size: 0.9rem; color: var(--text); }
+.warning strong { color: var(--yellow); }
+
+/* Command ref table */
+.cmd-table { width: 100%; border-collapse: collapse; margin: 16px 0 24px; font-size: 0.85rem; }
+.cmd-table th { text-align: left; padding: 10px 12px; border-bottom: 2px solid var(--border); color: var(--accent); font-weight: 600; }
+.cmd-table td { padding: 10px 12px; border-bottom: 1px solid var(--border); color: var(--text-muted); }
+.cmd-table td:first-child { font-family: var(--mono); color: var(--text); white-space: nowrap; }
+
+/* Footer */
+footer { border-top: 1px solid var(--border); padding: 40px 0; }
+.footer-inner { max-width: 1120px; margin: 0 auto; padding: 0 24px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 16px; }
+.footer-brand { font-family: var(--mono); font-weight: 700; color: var(--accent); font-size: 1.2rem; }
+.footer-links { display: flex; gap: 24px; }
+.footer-links a { color: var(--text-muted); font-size: 0.85rem; }
+.footer-links a:hover { color: var(--text); }
+.footer-tagline { width: 100%; text-align: center; color: var(--text-muted); font-size: 0.8rem; margin-top: 16px; }
+
+@media (max-width: 767px) {
+  .page-header h1 { font-size: 1.8rem; }
+  .nav-links { display: none; }
+  .cmd-table { font-size: 0.75rem; }
+  .cmd-table td:first-child { white-space: normal; }
+  .footer-inner { justify-content: center; text-align: center; }
+}
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="nav-inner">
+    <a href="/" class="nav-logo">kv</a>
+    <div class="nav-links">
+      <a href="/#install">Install</a>
+      <a href="/#features">Features</a>
+      <a href="guide.html" class="active">Guide</a>
+      <a href="faq.html">FAQ</a>
+      <a href="feedback.html">Feedback</a>
+      <a href="https://github.com/SatishoBananamoto/kv-secrets" class="nav-gh">
+        <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/></svg>
+        GitHub
+      </a>
+    </div>
+  </div>
+</nav>
+
+<div class="page-header">
+  <div class="container">
+    <h1>Getting Started Guide</h1>
+    <p>From installation to MCP integration in 5 minutes.</p>
+  </div>
+</div>
+
+<div class="toc">
+  <div class="container">
+    <ul>
+      <li><a href="#installation">Installation</a></li>
+      <li><a href="#quickstart">Quick Start</a></li>
+      <li><a href="#mcp">MCP Setup</a></li>
+      <li><a href="#environments">Environments</a></li>
+      <li><a href="#commands">All Commands</a></li>
+      <li><a href="#security">Security</a></li>
+      <li><a href="#best-practices">Best Practices</a></li>
+    </ul>
+  </div>
+</div>
+
+<section class="guide">
+  <div class="container">
+
+    <!-- Installation -->
+    <div class="guide-section" id="installation">
+      <h2>Installation</h2>
+      <p>kv requires Python 3.10 or later. Install from PyPI:</p>
+      <div class="terminal">
+        <div class="terminal-bar"><div class="dot dot-r"></div><div class="dot dot-y"></div><div class="dot dot-g"></div><span>terminal</span></div>
+<pre><span class="p">$</span> <span class="c">pip install</span> kv-secrets
+<span class="p">$</span> <span class="c">kv --version</span>
+<span class="v">kv 0.1.0</span></pre>
+      </div>
+      <div class="tip"><strong>Tip:</strong> Use <code>pipx install kv-secrets</code> for a globally isolated install that won't conflict with project dependencies.</div>
+    </div>
+
+    <!-- Quick Start -->
+    <div class="guide-section" id="quickstart">
+      <h2>Quick Start</h2>
+
+      <h3>1. Initialize a project</h3>
+      <p>Navigate to your project directory and run:</p>
+      <div class="terminal">
+        <div class="terminal-bar"><div class="dot dot-r"></div><div class="dot dot-y"></div><div class="dot dot-g"></div><span>terminal</span></div>
+<pre><span class="p">$</span> <span class="c">kv init</span>
+<span class="o">  kv -- initialized</span>
+<span class="o">  Master key   .secrets/key</span>  <span class="r">(DO NOT COMMIT)</span>
+<span class="o">  Encrypted    .secrets/dev.enc</span></pre>
+      </div>
+      <p>This creates a <code>.secrets/</code> directory with your master key and encrypted store. The master key is automatically added to <code>.gitignore</code>.</p>
+
+      <h3>2. Store secrets</h3>
+      <div class="terminal">
+        <div class="terminal-bar"><div class="dot dot-r"></div><div class="dot dot-y"></div><div class="dot dot-g"></div><span>terminal</span></div>
+<pre><span class="p">$</span> <span class="c">kv set</span> <span class="k">API_KEY</span>=<span class="v">sk-live-abc123</span>
+<span class="o">  set API_KEY  (dev)  [encrypted]</span>
+
+<span class="p">$</span> <span class="c">kv set</span> <span class="k">DB_URL</span>=<span class="v">postgres://user:pass@host/db</span>
+<span class="o">  set DB_URL  (dev)  [encrypted]</span></pre>
+      </div>
+      <div class="warning"><strong>Important:</strong> Use <code>"quotes"</code> around values that contain spaces or special characters: <code>kv set "MY_KEY=value with spaces"</code></div>
+
+      <h3>3. Use secrets</h3>
+      <div class="terminal">
+        <div class="terminal-bar"><div class="dot dot-r"></div><div class="dot dot-y"></div><div class="dot dot-g"></div><span>terminal</span></div>
+<pre><span class="p">$</span> <span class="c">kv get</span> API_KEY
+<span class="v">sk-live-abc123</span>
+
+<span class="p">$</span> <span class="c">kv ls</span>
+<span class="o">  kv -- dev (2 secrets)</span>
+<span class="o">  API_KEY   ********</span>
+<span class="o">  DB_URL    ********</span>
+
+<span class="p">$</span> <span class="c">kv run</span> <span class="v">python app.py</span>
+<span class="o">  (secrets injected as env vars)</span></pre>
+      </div>
+    </div>
+
+    <!-- MCP Setup -->
+    <div class="guide-section" id="mcp">
+      <h2>MCP Setup (AI Editor Integration)</h2>
+      <p>Connect kv to your AI editor with one command:</p>
+
+      <h3>Cursor</h3>
+      <div class="terminal">
+        <div class="terminal-bar"><div class="dot dot-r"></div><div class="dot dot-y"></div><div class="dot dot-g"></div><span>terminal</span></div>
+<pre><span class="p">$</span> <span class="c">kv setup</span> cursor
+<span class="v">  MCP configured for Cursor</span>
+<span class="o">  Config: .cursor/mcp.json</span>
+<span class="o">  Restart Cursor to activate.</span></pre>
+      </div>
+
+      <h3>Claude Code</h3>
+      <div class="terminal">
+        <div class="terminal-bar"><div class="dot dot-r"></div><div class="dot dot-y"></div><div class="dot dot-g"></div><span>terminal</span></div>
+<pre><span class="p">$</span> <span class="c">kv setup</span> claude-code
+<span class="v">  MCP configured for Claude Code</span>
+<span class="o">  Config: .mcp.json</span></pre>
+      </div>
+
+      <h3>VS Code</h3>
+      <div class="terminal">
+        <div class="terminal-bar"><div class="dot dot-r"></div><div class="dot dot-y"></div><div class="dot dot-g"></div><span>terminal</span></div>
+<pre><span class="p">$</span> <span class="c">kv setup</span> vscode
+<span class="v">  MCP configured for VS Code</span>
+<span class="o">  Config: .vscode/mcp.json</span></pre>
+      </div>
+
+      <h3>Security profiles</h3>
+      <p>By default, kv runs in <strong>safe mode</strong> — your AI can list keys and run commands but never see secret values. To enable additional capabilities:</p>
+      <div class="terminal">
+        <div class="terminal-bar"><div class="dot dot-r"></div><div class="dot dot-y"></div><div class="dot dot-g"></div><span>terminal</span></div>
+<pre><span class="o"># Allow AI to store/delete secrets</span>
+<span class="p">$</span> <span class="c">kv setup</span> cursor <span class="k">--allow-mutate</span>
+
+<span class="o"># Allow AI to read secret values (use with caution)</span>
+<span class="p">$</span> <span class="c">kv setup</span> cursor <span class="k">--allow-mutate --allow-reveal</span></pre>
+      </div>
+
+      <h3>MCP tools available</h3>
+      <table class="cmd-table">
+        <thead><tr><th>Tool</th><th>Profile</th><th>Description</th></tr></thead>
+        <tbody>
+          <tr><td>kv_status</td><td>Safe</td><td>Project info (root, envs, count)</td></tr>
+          <tr><td>kv_envs</td><td>Safe</td><td>List environment names</td></tr>
+          <tr><td>kv_list</td><td>Safe</td><td>List key names (no values)</td></tr>
+          <tr><td>kv_run</td><td>Safe</td><td>Run command with secrets injected. Exit code only.</td></tr>
+          <tr><td>kv_set</td><td>Mutate</td><td>Store/update an encrypted secret</td></tr>
+          <tr><td>kv_rm</td><td>Mutate</td><td>Remove a secret</td></tr>
+          <tr><td>kv_get</td><td>Reveal</td><td>Get secret value (plaintext to AI)</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Environments -->
+    <div class="guide-section" id="environments">
+      <h2>Multi-Environment</h2>
+      <p>kv supports multiple environments (dev, staging, prod) with isolated encryption keys derived from BLAKE2b.</p>
+      <div class="terminal">
+        <div class="terminal-bar"><div class="dot dot-r"></div><div class="dot dot-y"></div><div class="dot dot-g"></div><span>terminal</span></div>
+<pre><span class="p">$</span> <span class="c">kv env</span> prod
+<span class="v">  switched to prod</span>
+
+<span class="p">$</span> <span class="c">kv set</span> <span class="k">API_KEY</span>=<span class="v">sk-live-production-key</span>
+<span class="o">  set API_KEY  (prod)  [encrypted]</span>
+
+<span class="p">$</span> <span class="c">kv envs</span>
+<span class="o">  dev   (2 secrets)</span>
+<span class="o">  prod  (1 secret)  *active</span>
+
+<span class="p">$</span> <span class="c">kv run</span> <span class="k">-e dev</span> <span class="v">python app.py</span>
+<span class="o">  (runs with dev secrets, even when prod is active)</span></pre>
+      </div>
+    </div>
+
+    <!-- All Commands -->
+    <div class="guide-section" id="commands">
+      <h2>Command Reference</h2>
+      <table class="cmd-table">
+        <thead><tr><th>Command</th><th>Description</th></tr></thead>
+        <tbody>
+          <tr><td>kv init</td><td>Initialize encrypted store in current project</td></tr>
+          <tr><td>kv set KEY=VALUE</td><td>Store an encrypted secret</td></tr>
+          <tr><td>kv get KEY</td><td>Retrieve and decrypt a secret</td></tr>
+          <tr><td>kv ls</td><td>List all secret names (masked values)</td></tr>
+          <tr><td>kv rm KEY</td><td>Remove a secret</td></tr>
+          <tr><td>kv run CMD</td><td>Run command with secrets as env vars</td></tr>
+          <tr><td>kv export</td><td>Export secrets as .env format</td></tr>
+          <tr><td>kv import FILE</td><td>Import secrets from .env file</td></tr>
+          <tr><td>kv envs</td><td>List all environments</td></tr>
+          <tr><td>kv env NAME</td><td>Switch active environment</td></tr>
+          <tr><td>kv status</td><td>Show project status</td></tr>
+          <tr><td>kv setup EDITOR</td><td>Configure MCP for an AI editor</td></tr>
+          <tr><td>kv mcp</td><td>Print MCP config JSON</td></tr>
+          <tr><td>kv version</td><td>Show version</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Security -->
+    <div class="guide-section" id="security">
+      <h2>Security Model</h2>
+
+      <h3>Encryption</h3>
+      <ul>
+        <li><strong>Cipher:</strong> ChaCha20-Poly1305 AEAD (256-bit keys)</li>
+        <li><strong>Key derivation:</strong> BLAKE2b with environment name as context</li>
+        <li><strong>Authenticated encryption:</strong> Any tampering is detected and rejected</li>
+        <li><strong>Fresh nonce:</strong> Every write uses a new random nonce</li>
+      </ul>
+
+      <h3>What's safe to commit</h3>
+      <ul>
+        <li><code>.secrets/*.enc</code> files — encrypted blobs, safe for git</li>
+        <li><code>.secrets/config.json</code> — environment names, no secrets</li>
+      </ul>
+
+      <h3>What must stay private</h3>
+      <ul>
+        <li><code>.secrets/key</code> — master key (auto-added to .gitignore)</li>
+        <li>The <code>kvkey_...</code> export string — contains the master key</li>
+      </ul>
+
+      <div class="warning"><strong>Never commit your master key.</strong> If you suspect it's been exposed, generate a new one and re-encrypt your secrets.</div>
+    </div>
+
+    <!-- Best Practices -->
+    <div class="guide-section" id="best-practices">
+      <h2>Best Practices</h2>
+      <ol>
+        <li><strong>Use <code>kv run</code> instead of <code>kv get</code></strong> — inject secrets as environment variables so they never appear in your terminal or AI chat history.</li>
+        <li><strong>Use safe mode by default</strong> — only enable <code>--allow-reveal</code> when you explicitly need the AI to read a value.</li>
+        <li><strong>Use separate environments</strong> — keep dev and prod secrets isolated with <code>kv env prod</code>.</li>
+        <li><strong>Share keys securely</strong> — use <code>kv export --key</code> and send the <code>kvkey_...</code> string via Signal or 1Password, never Slack or email.</li>
+        <li><strong>Commit .enc files</strong> — they're encrypted and safe. This lets your team clone and decrypt with the shared key.</li>
+        <li><strong>Import existing .env files</strong> — use <code>kv import .env</code> to encrypt them, then delete the plaintext .env.</li>
+      </ol>
+    </div>
+
+  </div>
+</section>
+
+<footer>
+  <div class="footer-inner">
+    <div class="footer-brand">kv</div>
+    <div class="footer-links">
+      <a href="https://github.com/SatishoBananamoto/kv-secrets">GitHub</a>
+      <a href="https://pypi.org/project/kv-secrets/">PyPI</a>
+      <a href="faq.html">FAQ</a>
+      <a href="feedback.html">Feedback</a>
+    </div>
+    <p class="footer-tagline">Made for developers who don't paste API keys into AI chat.</p>
+  </div>
+</footer>
+
+</body>
+</html>

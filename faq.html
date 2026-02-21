@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>FAQ — kv Encrypted Secrets Management</title>
+<meta name="description" content="Frequently asked questions about kv — encrypted secrets management for developers and AI agents.">
+<link rel="canonical" href="https://kvsecure.com/faq.html">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>&#x1F510;</text></svg>">
+<style>
+:root {
+  --bg: #0a0a0f; --bg-card: #12121a; --text: #e4e4e7; --text-muted: #71717a;
+  --accent: #22d3ee; --accent-dim: rgba(34,211,238,0.12); --border: #27272a;
+  --green: #4ade80;
+  --font: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  --mono: "SF Mono", "Cascadia Code", "JetBrains Mono", Consolas, monospace;
+}
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+body { font-family: var(--font); background: var(--bg); color: var(--text); line-height: 1.6; -webkit-font-smoothing: antialiased; }
+a { color: var(--accent); text-decoration: none; }
+a:hover { text-decoration: underline; }
+:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+
+.container { max-width: 800px; margin: 0 auto; padding: 0 24px; }
+
+/* Nav */
+nav { position: fixed; top: 0; left: 0; right: 0; z-index: 100; background: rgba(10,10,15,0.85); backdrop-filter: blur(12px); border-bottom: 1px solid var(--border); }
+.nav-inner { max-width: 1120px; margin: 0 auto; padding: 0 24px; display: flex; align-items: center; justify-content: space-between; height: 60px; }
+.nav-logo { font-size: 1.5rem; font-weight: 700; color: var(--accent); font-family: var(--mono); }
+.nav-links { display: flex; gap: 28px; align-items: center; }
+.nav-links a { color: var(--text-muted); font-size: 0.9rem; }
+.nav-links a:hover { color: var(--text); text-decoration: none; }
+.nav-links a.active { color: var(--accent); }
+.nav-gh { display: inline-flex; align-items: center; gap: 6px; padding: 6px 14px; border: 1px solid var(--border); border-radius: 6px; font-size: 0.85rem; color: var(--text); }
+.nav-gh:hover { border-color: var(--text-muted); text-decoration: none; }
+
+/* Page header */
+.page-header { padding-top: 120px; padding-bottom: 40px; text-align: center; }
+.page-header h1 { font-size: 2.5rem; font-weight: 800; margin-bottom: 12px; }
+.page-header p { color: var(--text-muted); font-size: 1.1rem; }
+
+/* FAQ */
+.faq-section { padding: 20px 0 80px; }
+.faq-item { border-bottom: 1px solid var(--border); padding: 24px 0; }
+.faq-item:first-child { border-top: 1px solid var(--border); }
+.faq-q { font-size: 1.1rem; font-weight: 600; margin-bottom: 12px; cursor: pointer; display: flex; justify-content: space-between; align-items: center; }
+.faq-q::after { content: "+"; font-size: 1.5rem; color: var(--accent); transition: transform 0.2s; }
+.faq-item.open .faq-q::after { transform: rotate(45deg); }
+.faq-a { color: var(--text-muted); font-size: 0.95rem; line-height: 1.7; max-height: 0; overflow: hidden; transition: max-height 0.3s ease; }
+.faq-item.open .faq-a { max-height: 500px; }
+.faq-a code { font-family: var(--mono); background: var(--bg-card); padding: 2px 6px; border-radius: 4px; font-size: 0.85rem; color: var(--accent); }
+
+/* Footer */
+footer { border-top: 1px solid var(--border); padding: 40px 0; }
+.footer-inner { max-width: 1120px; margin: 0 auto; padding: 0 24px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 16px; }
+.footer-brand { font-family: var(--mono); font-weight: 700; color: var(--accent); font-size: 1.2rem; }
+.footer-links { display: flex; gap: 24px; }
+.footer-links a { color: var(--text-muted); font-size: 0.85rem; }
+.footer-links a:hover { color: var(--text); }
+.footer-tagline { width: 100%; text-align: center; color: var(--text-muted); font-size: 0.8rem; margin-top: 16px; }
+
+@media (max-width: 767px) {
+  .page-header h1 { font-size: 1.8rem; }
+  .nav-links { display: none; }
+  .footer-inner { justify-content: center; text-align: center; }
+}
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="nav-inner">
+    <a href="/" class="nav-logo">kv</a>
+    <div class="nav-links">
+      <a href="/#install">Install</a>
+      <a href="/#features">Features</a>
+      <a href="guide.html">Guide</a>
+      <a href="faq.html" class="active">FAQ</a>
+      <a href="feedback.html">Feedback</a>
+      <a href="https://github.com/SatishoBananamoto/kv-secrets" class="nav-gh">
+        <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/></svg>
+        GitHub
+      </a>
+    </div>
+  </div>
+</nav>
+
+<div class="page-header">
+  <div class="container">
+    <h1>Frequently Asked Questions</h1>
+    <p>Everything you need to know about kv secrets management.</p>
+  </div>
+</div>
+
+<section class="faq-section">
+  <div class="container">
+
+    <div class="faq-item open">
+      <div class="faq-q">What is kv?</div>
+      <div class="faq-a">
+        <p>kv is an encrypted secrets manager built for developers who use AI coding tools. It stores your API keys, database URLs, and other sensitive data encrypted with ChaCha20-Poly1305 on your local machine. AI agents can use your secrets through MCP (Model Context Protocol) without ever seeing the actual values.</p>
+      </div>
+    </div>
+
+    <div class="faq-item">
+      <div class="faq-q">Is kv free?</div>
+      <div class="faq-a">
+        <p>Yes. The CLI and MCP server are completely free and open source (MIT license). You get unlimited secrets, unlimited environments, and full encryption at no cost. A paid team plan ($15/team/month) with cloud sync, team management, and CI/CD tokens is coming soon.</p>
+      </div>
+    </div>
+
+    <div class="faq-item">
+      <div class="faq-q">What editors does kv work with?</div>
+      <div class="faq-a">
+        <p>kv works with any editor that supports MCP: <strong>Cursor</strong>, <strong>Claude Code</strong>, <strong>VS Code</strong>, <strong>Windsurf</strong>, and <strong>Cline</strong>. Run <code>kv setup cursor</code> (or <code>claude-code</code> / <code>vscode</code>) and it auto-configures the MCP connection.</p>
+      </div>
+    </div>
+
+    <div class="faq-item">
+      <div class="faq-q">How does kv keep my secrets safe from AI?</div>
+      <div class="faq-a">
+        <p>kv uses a 3-tier security profile system:</p>
+        <p><strong>Safe mode</strong> (default): AI can list key names and run commands with secrets injected as environment variables, but never sees the actual values. This is the recommended mode.</p>
+        <p><strong>Mutate mode</strong> (opt-in): AI can also store and delete secrets.</p>
+        <p><strong>Reveal mode</strong> (opt-in): AI can read secret values. Only enable this if you explicitly need it.</p>
+        <p>The key tool is <code>kv_run</code> — it injects secrets into a subprocess and returns only the exit code. Your AI agent never sees the secret values in chat.</p>
+      </div>
+    </div>
+
+    <div class="faq-item">
+      <div class="faq-q">What encryption does kv use?</div>
+      <div class="faq-a">
+        <p>ChaCha20-Poly1305 AEAD with 256-bit keys — the same cipher used by WireGuard VPN and TLS 1.3. Keys are derived per-environment using BLAKE2b with the environment name as context. The encrypted <code>.enc</code> files are safe to commit to git — only the master key (stored in <code>.secrets/key</code>) must stay private.</p>
+      </div>
+    </div>
+
+    <div class="faq-item">
+      <div class="faq-q">Is it safe to commit .enc files to git?</div>
+      <div class="faq-a">
+        <p>Yes. The <code>.enc</code> files contain only ciphertext — both key names and values are encrypted. Without the master key, they're indistinguishable from random bytes. The master key file (<code>.secrets/key</code>) is auto-added to <code>.gitignore</code> during <code>kv init</code>.</p>
+      </div>
+    </div>
+
+    <div class="faq-item">
+      <div class="faq-q">How do I share secrets with my team?</div>
+      <div class="faq-a">
+        <p>For now, use <code>kv export --key</code> to get a shareable key string (<code>kvkey_...</code>). Send it to your teammate through a secure channel (Signal, 1Password, etc.). They import it with <code>kv import-key kvkey_...</code>. The upcoming team plan will add zero-knowledge cloud sync so sharing is automatic.</p>
+      </div>
+    </div>
+
+    <div class="faq-item">
+      <div class="faq-q">Does kv work on Windows?</div>
+      <div class="faq-a">
+        <p>Yes. kv runs on Windows, macOS, and Linux. It's a pure Python package with one dependency (<code>cryptography</code>) which has prebuilt wheels for all platforms. Install with <code>pip install kv-secrets</code>.</p>
+      </div>
+    </div>
+
+    <div class="faq-item">
+      <div class="faq-q">How is kv different from .env files?</div>
+      <div class="faq-a">
+        <p><code>.env</code> files store secrets in plaintext — if leaked or committed to git, everything is exposed. kv encrypts everything with military-grade encryption. You can even import existing <code>.env</code> files with <code>kv import .env</code> and they'll be encrypted immediately.</p>
+      </div>
+    </div>
+
+    <div class="faq-item">
+      <div class="faq-q">How is kv different from 1Password, Vault, or Doppler?</div>
+      <div class="faq-a">
+        <p>kv is built specifically for developers using AI coding tools. 1Password is a general password manager ($2.99/mo). HashiCorp Vault and Doppler are enterprise-grade with complex setups. kv is free, zero-config, works offline, and has native MCP integration so your AI editor can use secrets without you pasting them into chat.</p>
+      </div>
+    </div>
+
+    <div class="faq-item">
+      <div class="faq-q">Can I use kv without an AI editor?</div>
+      <div class="faq-a">
+        <p>Absolutely. kv works great as a standalone secrets manager. Use <code>kv set</code>, <code>kv get</code>, <code>kv run</code> from the terminal. The MCP integration is optional — it just makes kv even more powerful when paired with AI tools.</p>
+      </div>
+    </div>
+
+    <div class="faq-item">
+      <div class="faq-q">Is kv open source?</div>
+      <div class="faq-a">
+        <p>The CLI and MCP server are open source under the MIT license. You can inspect every line of code on <a href="https://github.com/SatishoBananamoto/kv-secrets">GitHub</a>. The cloud sync server (for the upcoming team plan) is proprietary.</p>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<footer>
+  <div class="footer-inner">
+    <div class="footer-brand">kv</div>
+    <div class="footer-links">
+      <a href="https://github.com/SatishoBananamoto/kv-secrets">GitHub</a>
+      <a href="https://pypi.org/project/kv-secrets/">PyPI</a>
+      <a href="guide.html">Guide</a>
+      <a href="feedback.html">Feedback</a>
+    </div>
+    <p class="footer-tagline">Made for developers who don't paste API keys into AI chat.</p>
+  </div>
+</footer>
+
+<script>
+document.querySelectorAll('.faq-q').forEach(function(q) {
+  q.addEventListener('click', function() {
+    this.parentElement.classList.toggle('open');
+  });
+});
+</script>
+
+</body>
+</html>

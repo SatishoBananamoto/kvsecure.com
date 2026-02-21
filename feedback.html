@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Feedback — kv Encrypted Secrets Management</title>
+<meta name="description" content="Share your feedback, report bugs, or request features for kv encrypted secrets management.">
+<link rel="canonical" href="https://kvsecure.com/feedback.html">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>&#x1F510;</text></svg>">
+<style>
+:root {
+  --bg: #0a0a0f; --bg-card: #12121a; --text: #e4e4e7; --text-muted: #71717a;
+  --accent: #22d3ee; --accent-dim: rgba(34,211,238,0.12); --border: #27272a;
+  --green: #4ade80;
+  --font: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  --mono: "SF Mono", "Cascadia Code", "JetBrains Mono", Consolas, monospace;
+}
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+body { font-family: var(--font); background: var(--bg); color: var(--text); line-height: 1.6; -webkit-font-smoothing: antialiased; }
+a { color: var(--accent); text-decoration: none; }
+a:hover { text-decoration: underline; }
+:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+
+.container { max-width: 700px; margin: 0 auto; padding: 0 24px; }
+
+/* Nav */
+nav { position: fixed; top: 0; left: 0; right: 0; z-index: 100; background: rgba(10,10,15,0.85); backdrop-filter: blur(12px); border-bottom: 1px solid var(--border); }
+.nav-inner { max-width: 1120px; margin: 0 auto; padding: 0 24px; display: flex; align-items: center; justify-content: space-between; height: 60px; }
+.nav-logo { font-size: 1.5rem; font-weight: 700; color: var(--accent); font-family: var(--mono); }
+.nav-links { display: flex; gap: 28px; align-items: center; }
+.nav-links a { color: var(--text-muted); font-size: 0.9rem; }
+.nav-links a:hover { color: var(--text); text-decoration: none; }
+.nav-links a.active { color: var(--accent); }
+.nav-gh { display: inline-flex; align-items: center; gap: 6px; padding: 6px 14px; border: 1px solid var(--border); border-radius: 6px; font-size: 0.85rem; color: var(--text); }
+.nav-gh:hover { border-color: var(--text-muted); text-decoration: none; }
+
+/* Page header */
+.page-header { padding-top: 120px; padding-bottom: 20px; text-align: center; }
+.page-header h1 { font-size: 2.5rem; font-weight: 800; margin-bottom: 12px; }
+.page-header p { color: var(--text-muted); font-size: 1.1rem; max-width: 500px; margin: 0 auto; }
+
+/* Feedback channels */
+.channels { padding: 40px 0 60px; }
+.channel-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px; }
+.channel-card {
+  background: var(--bg-card); border: 1px solid var(--border); border-radius: 12px;
+  padding: 28px; text-align: center; transition: border-color 0.2s;
+}
+.channel-card:hover { border-color: var(--accent); }
+.channel-icon { font-size: 2rem; margin-bottom: 14px; }
+.channel-card h3 { font-size: 1.1rem; margin-bottom: 8px; font-weight: 600; }
+.channel-card p { font-size: 0.85rem; color: var(--text-muted); margin-bottom: 16px; line-height: 1.6; }
+.channel-btn {
+  display: inline-block; padding: 8px 20px; border: 1px solid var(--border);
+  border-radius: 6px; font-size: 0.85rem; color: var(--text); font-weight: 500;
+  transition: border-color 0.2s, background 0.2s;
+}
+.channel-btn:hover { border-color: var(--accent); background: var(--accent-dim); text-decoration: none; }
+.channel-btn-primary {
+  background: var(--accent); color: #000; border-color: var(--accent); font-weight: 600;
+}
+.channel-btn-primary:hover { opacity: 0.85; background: var(--accent); }
+
+/* Contact form */
+.contact-section { padding: 0 0 80px; }
+.contact-section h2 { font-size: 1.6rem; font-weight: 700; text-align: center; margin-bottom: 8px; }
+.contact-section .sub { text-align: center; color: var(--text-muted); margin-bottom: 32px; font-size: 0.95rem; }
+.form-group { margin-bottom: 20px; }
+.form-group label { display: block; font-size: 0.85rem; color: var(--text-muted); margin-bottom: 6px; font-weight: 500; }
+.form-group input, .form-group textarea, .form-group select {
+  width: 100%; padding: 12px 14px; background: var(--bg-card); border: 1px solid var(--border);
+  border-radius: 8px; color: var(--text); font-family: var(--font); font-size: 0.95rem;
+  transition: border-color 0.2s;
+}
+.form-group input:focus, .form-group textarea:focus, .form-group select:focus {
+  border-color: var(--accent); outline: none;
+}
+.form-group textarea { min-height: 140px; resize: vertical; }
+.form-group select { cursor: pointer; }
+.form-group select option { background: var(--bg-card); color: var(--text); }
+.submit-btn {
+  display: block; width: 100%; padding: 14px; background: var(--accent); color: #000;
+  border: none; border-radius: 8px; font-size: 1rem; font-weight: 600;
+  cursor: pointer; transition: opacity 0.2s; font-family: var(--font);
+}
+.submit-btn:hover { opacity: 0.85; }
+.form-note { text-align: center; margin-top: 12px; font-size: 0.8rem; color: var(--text-muted); }
+
+/* Success message */
+.success-msg {
+  display: none; text-align: center; padding: 40px; background: var(--bg-card);
+  border: 1px solid var(--green); border-radius: 12px;
+}
+.success-msg.show { display: block; }
+.success-msg h3 { color: var(--green); font-size: 1.3rem; margin-bottom: 8px; }
+.success-msg p { color: var(--text-muted); }
+
+/* Footer */
+footer { border-top: 1px solid var(--border); padding: 40px 0; }
+.footer-inner { max-width: 1120px; margin: 0 auto; padding: 0 24px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 16px; }
+.footer-brand { font-family: var(--mono); font-weight: 700; color: var(--accent); font-size: 1.2rem; }
+.footer-links { display: flex; gap: 24px; }
+.footer-links a { color: var(--text-muted); font-size: 0.85rem; }
+.footer-links a:hover { color: var(--text); }
+.footer-tagline { width: 100%; text-align: center; color: var(--text-muted); font-size: 0.8rem; margin-top: 16px; }
+
+@media (max-width: 767px) {
+  .page-header h1 { font-size: 1.8rem; }
+  .nav-links { display: none; }
+  .channel-grid { grid-template-columns: 1fr; }
+  .footer-inner { justify-content: center; text-align: center; }
+}
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="nav-inner">
+    <a href="/" class="nav-logo">kv</a>
+    <div class="nav-links">
+      <a href="/#install">Install</a>
+      <a href="/#features">Features</a>
+      <a href="guide.html">Guide</a>
+      <a href="faq.html">FAQ</a>
+      <a href="feedback.html" class="active">Feedback</a>
+      <a href="https://github.com/SatishoBananamoto/kv-secrets" class="nav-gh">
+        <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/></svg>
+        GitHub
+      </a>
+    </div>
+  </div>
+</nav>
+
+<div class="page-header">
+  <div class="container">
+    <h1>We'd love your feedback</h1>
+    <p>Help us make kv better. Report bugs, request features, or just say hi.</p>
+  </div>
+</div>
+
+<section class="channels">
+  <div class="container">
+    <div class="channel-grid">
+
+      <div class="channel-card">
+        <div class="channel-icon">&#x1F41B;</div>
+        <h3>Report a Bug</h3>
+        <p>Found something broken? Open an issue on GitHub with steps to reproduce.</p>
+        <a href="https://github.com/SatishoBananamoto/kv-secrets/issues/new?labels=bug&template=bug_report.md" class="channel-btn">Open Issue</a>
+      </div>
+
+      <div class="channel-card">
+        <div class="channel-icon">&#x1F4A1;</div>
+        <h3>Request a Feature</h3>
+        <p>Have an idea that would make kv better? We're all ears.</p>
+        <a href="https://github.com/SatishoBananamoto/kv-secrets/issues/new?labels=enhancement" class="channel-btn">Request Feature</a>
+      </div>
+
+      <div class="channel-card">
+        <div class="channel-icon">&#x2B50;</div>
+        <h3>Star on GitHub</h3>
+        <p>If kv saved you from leaking an API key, a star goes a long way.</p>
+        <a href="https://github.com/SatishoBananamoto/kv-secrets" class="channel-btn channel-btn-primary">Star kv-secrets</a>
+      </div>
+
+      <div class="channel-card">
+        <div class="channel-icon">&#x1F4AC;</div>
+        <h3>Discuss</h3>
+        <p>Questions, ideas, or just want to chat? Join the GitHub Discussions.</p>
+        <a href="https://github.com/SatishoBananamoto/kv-secrets/discussions" class="channel-btn">Join Discussion</a>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<section class="contact-section">
+  <div class="container">
+    <h2>Send us a message</h2>
+    <p class="sub">We'll get back to you within 24 hours.</p>
+
+    <form id="feedback-form" action="https://formspree.io/f/placeholder" method="POST">
+      <div class="form-group">
+        <label for="name">Name</label>
+        <input type="text" id="name" name="name" placeholder="Your name" required>
+      </div>
+
+      <div class="form-group">
+        <label for="email">Email</label>
+        <input type="email" id="email" name="email" placeholder="you@example.com" required>
+      </div>
+
+      <div class="form-group">
+        <label for="type">Type</label>
+        <select id="type" name="type">
+          <option value="feedback">General Feedback</option>
+          <option value="bug">Bug Report</option>
+          <option value="feature">Feature Request</option>
+          <option value="question">Question</option>
+          <option value="other">Other</option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label for="message">Message</label>
+        <textarea id="message" name="message" placeholder="Tell us what's on your mind..." required></textarea>
+      </div>
+
+      <button type="submit" class="submit-btn">Send Feedback</button>
+      <p class="form-note">Or email us directly at <a href="mailto:hello@kvsecure.com">hello@kvsecure.com</a></p>
+    </form>
+
+    <div class="success-msg" id="success-msg">
+      <h3>Thank you!</h3>
+      <p>Your feedback has been received. We'll get back to you soon.</p>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="footer-inner">
+    <div class="footer-brand">kv</div>
+    <div class="footer-links">
+      <a href="https://github.com/SatishoBananamoto/kv-secrets">GitHub</a>
+      <a href="https://pypi.org/project/kv-secrets/">PyPI</a>
+      <a href="guide.html">Guide</a>
+      <a href="faq.html">FAQ</a>
+    </div>
+    <p class="footer-tagline">Made for developers who don't paste API keys into AI chat.</p>
+  </div>
+</footer>
+
+<script>
+document.getElementById('feedback-form').addEventListener('submit', function(e) {
+  e.preventDefault();
+  // For now, show success and open mailto as fallback
+  var type = document.getElementById('type').value;
+  var name = document.getElementById('name').value;
+  var email = document.getElementById('email').value;
+  var message = document.getElementById('message').value;
+  var subject = encodeURIComponent('[kv feedback] ' + type + ' from ' + name);
+  var body = encodeURIComponent('From: ' + name + ' (' + email + ')\nType: ' + type + '\n\n' + message);
+  window.location.href = 'mailto:hello@kvsecure.com?subject=' + subject + '&body=' + body;
+  document.getElementById('feedback-form').style.display = 'none';
+  document.getElementById('success-msg').classList.add('show');
+});
+</script>
+
+</body>
+</html>
