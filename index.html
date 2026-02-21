@@ -10,6 +10,15 @@
 <meta property="og:description" content="ChaCha20-Poly1305 encryption. MCP integration. Your AI agent never sees your secrets.">
 <meta property="og:type" content="website">
 <meta property="og:url" content="https://kvsecure.com">
+<meta property="og:image" content="https://kvsecure.com/og-image.png">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="kv — Encrypted Secrets for Developers & AI Agents">
+<meta name="twitter:description" content="ChaCha20-Poly1305 encryption. MCP integration. Your AI agent never sees your secrets.">
+<meta name="twitter:image" content="https://kvsecure.com/og-image.png">
+<link rel="canonical" href="https://kvsecure.com/">
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"SoftwareApplication","name":"kv","description":"Encrypted secrets management for developers and AI agents. ChaCha20-Poly1305 encryption with MCP integration.","url":"https://kvsecure.com","applicationCategory":"DeveloperApplication","operatingSystem":"Windows, macOS, Linux","offers":{"@type":"Offer","price":"0","priceCurrency":"USD"},"author":{"@type":"Organization","name":"kvsecure"}}
+</script>
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>&#x1F510;</text></svg>">
 <style>
 /* ── Variables ─────────────────────────────────────────── */
@@ -46,6 +55,15 @@ a:hover { text-decoration: underline; }
 /* ── Layout ────────────────────────────────────────────── */
 .container { max-width: 1120px; margin: 0 auto; padding: 0 24px; }
 section { padding: 80px 0; }
+
+/* ── Skip link + Focus ────────────────────────────────── */
+.skip-link {
+  position: absolute; top: -100px; left: 16px;
+  background: var(--accent); color: #000; padding: 8px 16px;
+  border-radius: 4px; font-weight: 600; font-size: 0.9rem; z-index: 200;
+}
+.skip-link:focus { top: 8px; }
+:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
 
 /* ── Nav ───────────────────────────────────────────────── */
 nav {
@@ -210,7 +228,7 @@ nav {
   font-size: 1.2rem; font-weight: 700; margin-bottom: 16px;
 }
 .how-step h3 { font-size: 1.1rem; margin-bottom: 8px; }
-.how-step p { font-size: 0.9rem; color: var(--text-muted); margin-bottom: 16px; min-height: 3em; }
+.how-step p { font-size: 0.9rem; color: var(--text-muted); margin-bottom: 16px; flex: 1; }
 .how-step .terminal { text-align: left; }
 .how-step .terminal pre { font-size: 0.8rem; padding: 14px; min-height: 168px; }
 
@@ -296,12 +314,13 @@ footer {
 </style>
 </head>
 <body>
+<a class="skip-link" href="#install">Skip to content</a>
 
 <!-- ── Nav ──────────────────────────────────────────────── -->
 <nav>
   <div class="nav-inner">
     <a href="#" class="nav-logo">kv</a>
-    <button class="nav-toggle" onclick="document.querySelector('.nav-links').classList.toggle('open')" aria-label="Menu">&#9776;</button>
+    <button class="nav-toggle" id="nav-toggle" aria-label="Menu" aria-expanded="false">&#9776;</button>
     <div class="nav-links">
       <a href="#install">Install</a>
       <a href="#features">Features</a>
@@ -315,6 +334,7 @@ footer {
   </div>
 </nav>
 
+<main>
 <!-- ── Hero ─────────────────────────────────────────────── -->
 <section class="hero">
   <div class="container">
@@ -368,7 +388,7 @@ footer {
     <h2>Install in seconds</h2>
     <div class="install-cmd">
       <code>pip install kv-secrets</code>
-      <button class="copy-btn" onclick="navigator.clipboard.writeText('pip install kv-secrets');this.textContent='Copied!';setTimeout(()=>this.textContent='Copy',1500)">Copy</button>
+      <button class="copy-btn" id="copy-btn">Copy</button>
     </div>
     <div class="quickstart">
       <div class="qs-step">
@@ -532,6 +552,8 @@ footer {
   </div>
 </section>
 
+</main>
+
 <!-- ── Footer ──────────────────────────────────────────── -->
 <footer>
   <div class="container">
@@ -658,6 +680,26 @@ footer {
 
   // Start after a short delay
   setTimeout(typeNext, 600);
+})();
+
+// ── Nav toggle + Copy button (moved from inline handlers) ──
+(function() {
+  var toggle = document.getElementById('nav-toggle');
+  var navLinks = document.querySelector('.nav-links');
+  if (toggle && navLinks) {
+    toggle.addEventListener('click', function() {
+      var open = navLinks.classList.toggle('open');
+      toggle.setAttribute('aria-expanded', open);
+    });
+  }
+  var copyBtn = document.getElementById('copy-btn');
+  if (copyBtn) {
+    copyBtn.addEventListener('click', function() {
+      navigator.clipboard.writeText('pip install kv-secrets');
+      copyBtn.textContent = 'Copied!';
+      setTimeout(function() { copyBtn.textContent = 'Copy'; }, 1500);
+    });
+  }
 })();
 
 // ── Scroll reveal with IntersectionObserver ──
