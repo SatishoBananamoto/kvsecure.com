@@ -185,7 +185,7 @@ footer { border-top: 1px solid var(--border); padding: 40px 0; }
     <h2>Send us a message</h2>
     <p class="sub">We'll get back to you within 24 hours.</p>
 
-    <form id="feedback-form">
+    <form id="feedback-form" action="https://formsubmit.co/support@kvsecure.com" method="POST">
       <div class="form-group">
         <label for="name">Name</label>
         <input type="text" id="name" name="name" placeholder="Your name" required>
@@ -212,14 +212,20 @@ footer { border-top: 1px solid var(--border); padding: 40px 0; }
         <textarea id="message" name="message" placeholder="Tell us what's on your mind..." required></textarea>
       </div>
 
+      <!-- Formsubmit.co config -->
+      <input type="hidden" name="_subject" value="New kv feedback">
+      <input type="hidden" name="_captcha" value="false">
+      <input type="hidden" name="_template" value="table">
+      <input type="text" name="_honey" style="display:none">
+      <input type="hidden" name="_next" value="https://kvsecure.com/feedback.html?sent=1">
+
       <button type="submit" class="submit-btn">Send Feedback</button>
       <p class="form-note">Or email us directly at <a href="mailto:support@kvsecure.com">support@kvsecure.com</a></p>
     </form>
 
     <div class="success-msg" id="success-msg">
-      <h3>Almost there!</h3>
-      <p>Your email client should have opened with a pre-filled message. Please hit <strong>Send</strong> in your email client to complete your feedback.</p>
-      <p style="margin-top: 12px;">Didn't open? Email us directly at <a href="mailto:support@kvsecure.com">support@kvsecure.com</a></p>
+      <h3>Thank you!</h3>
+      <p>Your feedback has been sent. We'll get back to you soon.</p>
     </div>
   </div>
 </section>
@@ -250,27 +256,38 @@ footer { border-top: 1px solid var(--border); padding: 40px 0; }
   }
 })();
 
-// Feedback form
-document.getElementById('feedback-form').addEventListener('submit', function(e) {
-  e.preventDefault();
-  var type = document.getElementById('type').value;
-  var name = document.getElementById('name').value;
-  var email = document.getElementById('email').value;
-  var message = document.getElementById('message').value;
-  var subject = encodeURIComponent('[kv feedback] ' + type + ' from ' + name);
-  var body = encodeURIComponent('From: ' + name + ' (' + email + ')\nType: ' + type + '\n\n' + message);
-
-  // Open mailto via temporary link (avoids navigating away from page)
-  var a = document.createElement('a');
-  a.href = 'mailto:support@kvsecure.com?subject=' + subject + '&body=' + body;
-  a.style.display = 'none';
-  document.body.appendChild(a);
-  a.click();
-  document.body.removeChild(a);
-
-  // Show honest message — we can't detect if mailto actually opened
+// Show success if redirected back after submission
+if (window.location.search.indexOf('sent=1') !== -1) {
   document.getElementById('feedback-form').style.display = 'none';
   document.getElementById('success-msg').classList.add('show');
+}
+
+// Feedback form — AJAX submit via Formsubmit.co
+document.getElementById('feedback-form').addEventListener('submit', function(e) {
+  e.preventDefault();
+  var form = this;
+  var btn = form.querySelector('.submit-btn');
+  btn.textContent = 'Sending...';
+  btn.disabled = true;
+
+  fetch(form.action, {
+    method: 'POST',
+    body: new FormData(form),
+    headers: { 'Accept': 'application/json' }
+  })
+  .then(function(res) {
+    if (res.ok) {
+      form.style.display = 'none';
+      document.getElementById('success-msg').classList.add('show');
+    } else {
+      throw new Error('Failed');
+    }
+  })
+  .catch(function() {
+    btn.textContent = 'Send Feedback';
+    btn.disabled = false;
+    alert('Something went wrong. Please email us at support@kvsecure.com');
+  });
 });
 </script>
 
