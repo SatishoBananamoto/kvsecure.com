@@ -256,10 +256,11 @@ footer { border-top: 1px solid var(--border); padding: 40px 0; }
   }
 })();
 
-// Show success if redirected back after submission
-if (window.location.search.indexOf('sent=1') !== -1) {
+// Show success if redirected back after actual submission (gated by sessionStorage)
+if (window.location.search.indexOf('sent=1') !== -1 && sessionStorage.getItem('kv_feedback_sent')) {
   document.getElementById('feedback-form').style.display = 'none';
   document.getElementById('success-msg').classList.add('show');
+  sessionStorage.removeItem('kv_feedback_sent');
 }
 
 // Feedback form — AJAX submit via Formsubmit.co
@@ -269,6 +270,7 @@ document.getElementById('feedback-form').addEventListener('submit', function(e) 
   var btn = form.querySelector('.submit-btn');
   btn.textContent = 'Sending...';
   btn.disabled = true;
+  sessionStorage.setItem('kv_feedback_sent', '1');
 
   fetch(form.action, {
     method: 'POST',
