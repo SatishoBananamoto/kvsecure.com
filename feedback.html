@@ -270,7 +270,6 @@ document.getElementById('feedback-form').addEventListener('submit', function(e) 
   var btn = form.querySelector('.submit-btn');
   btn.textContent = 'Sending...';
   btn.disabled = true;
-  sessionStorage.setItem('kv_feedback_sent', '1');
 
   fetch(form.action, {
     method: 'POST',
@@ -279,6 +278,7 @@ document.getElementById('feedback-form').addEventListener('submit', function(e) 
   })
   .then(function(res) {
     if (res.ok) {
+      sessionStorage.setItem('kv_feedback_sent', '1');
       form.style.display = 'none';
       document.getElementById('success-msg').classList.add('show');
     } else {
@@ -286,6 +286,7 @@ document.getElementById('feedback-form').addEventListener('submit', function(e) 
     }
   })
   .catch(function() {
+    sessionStorage.removeItem('kv_feedback_sent');
     btn.textContent = 'Send Feedback';
     btn.disabled = false;
     alert('Something went wrong. Please email us at support@kvsecure.com');

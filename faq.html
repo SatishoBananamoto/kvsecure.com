@@ -109,21 +109,21 @@ footer { border-top: 1px solid var(--border); padding: 40px 0; }
 
     <div class="faq-item">
       <button class="faq-q" id="faq-q-2" aria-expanded="false" aria-controls="faq-a-2">Is kv free?</button>
-      <div class="faq-a" id="faq-a-2" role="region" aria-labelledby="faq-q-2" hidden
+      <div class="faq-a" id="faq-a-2" role="region" aria-labelledby="faq-q-2" hidden>
         <p>Yes. The CLI and MCP server are completely free and open source (MIT license). You get unlimited secrets, unlimited environments, and full encryption at no cost. A paid team plan ($15/team/month) with cloud sync, team management, and CI/CD tokens is coming soon.</p>
       </div>
     </div>
 
     <div class="faq-item">
       <button class="faq-q" id="faq-q-3" aria-expanded="false" aria-controls="faq-a-3">What editors does kv work with?</button>
-      <div class="faq-a" id="faq-a-3" role="region" aria-labelledby="faq-q-3" hidden
+      <div class="faq-a" id="faq-a-3" role="region" aria-labelledby="faq-q-3" hidden>
         <p>kv works with any editor that supports MCP: <strong>Cursor</strong>, <strong>Claude Code</strong>, <strong>VS Code</strong>, <strong>Windsurf</strong>, and <strong>Cline</strong>. Run <code>kv setup cursor</code> (or <code>claude-code</code> / <code>vscode</code>) and it auto-configures the MCP connection.</p>
       </div>
     </div>
 
     <div class="faq-item">
       <button class="faq-q" id="faq-q-4" aria-expanded="false" aria-controls="faq-a-4">How does kv keep my secrets safe from AI?</button>
-      <div class="faq-a" id="faq-a-4" role="region" aria-labelledby="faq-q-4" hidden
+      <div class="faq-a" id="faq-a-4" role="region" aria-labelledby="faq-q-4" hidden>
         <p>kv uses a 3-tier security profile system:</p>
         <p><strong>Safe mode</strong> (default): AI can list key names and run commands with secrets injected as environment variables, but never sees the actual values. This is the recommended mode.</p>
         <p><strong>Mutate mode</strong> (opt-in): AI can also store and delete secrets.</p>
@@ -134,56 +134,56 @@ footer { border-top: 1px solid var(--border); padding: 40px 0; }
 
     <div class="faq-item">
       <button class="faq-q" id="faq-q-5" aria-expanded="false" aria-controls="faq-a-5">What encryption does kv use?</button>
-      <div class="faq-a" id="faq-a-5" role="region" aria-labelledby="faq-q-5" hidden
+      <div class="faq-a" id="faq-a-5" role="region" aria-labelledby="faq-q-5" hidden>
         <p>ChaCha20-Poly1305 AEAD with 256-bit keys — the same cipher used by WireGuard VPN and TLS 1.3. Keys are derived per-environment using BLAKE2b with the environment name as context. The encrypted <code>.enc</code> files are safe to commit to git — only the master key (stored in <code>.secrets/key</code>) must stay private.</p>
       </div>
     </div>
 
     <div class="faq-item">
       <button class="faq-q" id="faq-q-6" aria-expanded="false" aria-controls="faq-a-6">Is it safe to commit .enc files to git?</button>
-      <div class="faq-a" id="faq-a-6" role="region" aria-labelledby="faq-q-6" hidden
+      <div class="faq-a" id="faq-a-6" role="region" aria-labelledby="faq-q-6" hidden>
         <p>Yes. The <code>.enc</code> files contain only ciphertext — both key names and values are encrypted. Without the master key, they're indistinguishable from random bytes. The master key file (<code>.secrets/key</code>) is auto-added to <code>.gitignore</code> during <code>kv init</code>.</p>
       </div>
     </div>
 
     <div class="faq-item">
       <button class="faq-q" id="faq-q-7" aria-expanded="false" aria-controls="faq-a-7">How do I share secrets with my team?</button>
-      <div class="faq-a" id="faq-a-7" role="region" aria-labelledby="faq-q-7" hidden
+      <div class="faq-a" id="faq-a-7" role="region" aria-labelledby="faq-q-7" hidden>
         <p>For now, use <code>kv export --key</code> to get a shareable key string (<code>kvkey_...</code>). Send it to your teammate through a secure channel (Signal, 1Password, etc.). They import it with <code>kv import-key kvkey_...</code>. The upcoming team plan will add zero-knowledge cloud sync so sharing is automatic.</p>
       </div>
     </div>
 
     <div class="faq-item">
       <button class="faq-q" id="faq-q-8" aria-expanded="false" aria-controls="faq-a-8">Does kv work on Windows?</button>
-      <div class="faq-a" id="faq-a-8" role="region" aria-labelledby="faq-q-8" hidden
+      <div class="faq-a" id="faq-a-8" role="region" aria-labelledby="faq-q-8" hidden>
         <p>Yes. kv runs on Windows, macOS, and Linux. It's a pure Python package with one dependency (<code>cryptography</code>) which has prebuilt wheels for all platforms. Install with <code>pip install kv-secrets</code>.</p>
       </div>
     </div>
 
     <div class="faq-item">
       <button class="faq-q" id="faq-q-9" aria-expanded="false" aria-controls="faq-a-9">How is kv different from .env files?</button>
-      <div class="faq-a" id="faq-a-9" role="region" aria-labelledby="faq-q-9" hidden
+      <div class="faq-a" id="faq-a-9" role="region" aria-labelledby="faq-q-9" hidden>
         <p><code>.env</code> files store secrets in plaintext — if leaked or committed to git, everything is exposed. kv encrypts everything with military-grade encryption. You can even import existing <code>.env</code> files with <code>kv import .env</code> and they'll be encrypted immediately.</p>
       </div>
     </div>
 
     <div class="faq-item">
       <button class="faq-q" id="faq-q-10" aria-expanded="false" aria-controls="faq-a-10">How is kv different from 1Password, Vault, or Doppler?</button>
-      <div class="faq-a" id="faq-a-10" role="region" aria-labelledby="faq-q-10" hidden
+      <div class="faq-a" id="faq-a-10" role="region" aria-labelledby="faq-q-10" hidden>
         <p>kv is built specifically for developers using AI coding tools. 1Password is a general password manager ($2.99/mo). HashiCorp Vault and Doppler are enterprise-grade with complex setups. kv is free, zero-config, works offline, and has native MCP integration so your AI editor can use secrets without you pasting them into chat.</p>
       </div>
     </div>
 
     <div class="faq-item">
       <button class="faq-q" id="faq-q-11" aria-expanded="false" aria-controls="faq-a-11">Can I use kv without an AI editor?</button>
-      <div class="faq-a" id="faq-a-11" role="region" aria-labelledby="faq-q-11" hidden
+      <div class="faq-a" id="faq-a-11" role="region" aria-labelledby="faq-q-11" hidden>
         <p>Absolutely. kv works great as a standalone secrets manager. Use <code>kv set</code>, <code>kv get</code>, <code>kv run</code> from the terminal. The MCP integration is optional — it just makes kv even more powerful when paired with AI tools.</p>
       </div>
     </div>
 
     <div class="faq-item">
       <button class="faq-q" id="faq-q-12" aria-expanded="false" aria-controls="faq-a-12">Is kv open source?</button>
-      <div class="faq-a" id="faq-a-12" role="region" aria-labelledby="faq-q-12" hidden
+      <div class="faq-a" id="faq-a-12" role="region" aria-labelledby="faq-q-12" hidden>
         <p>The CLI and MCP server are open source under the MIT license. You can inspect every line of code on <a href="https://github.com/SatishoBananamoto/kv-secrets">GitHub</a>. The cloud sync server (for the upcoming team plan) is proprietary.</p>
       </div>
     </div>
