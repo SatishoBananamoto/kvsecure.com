@@ -117,7 +117,7 @@ footer { border-top: 1px solid var(--border); padding: 40px 0; }
 
 <nav>
   <div class="nav-inner">
-    <a href="/" class="nav-logo">kv</a>
+    <a href="/" class="nav-logo"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-3px;margin-right:4px"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0110 0v4"/></svg>kv</a>
     <div class="nav-links">
       <a href="/#install">Install</a>
       <a href="/#features">Features</a>
@@ -208,7 +208,7 @@ footer { border-top: 1px solid var(--border); padding: 40px 0; }
       </div>
 
       <button type="submit" class="submit-btn">Send Feedback</button>
-      <p class="form-note">Or email us directly at <a href="mailto:hello@kvsecure.com">hello@kvsecure.com</a></p>
+      <p class="form-note">Or email us directly at <a href="mailto:support@kvsecure.com">support@kvsecure.com</a></p>
     </form>
 
     <div class="success-msg" id="success-msg">
@@ -220,7 +220,7 @@ footer { border-top: 1px solid var(--border); padding: 40px 0; }
 
 <footer>
   <div class="footer-inner">
-    <div class="footer-brand">kv</div>
+    <div class="footer-brand"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-3px;margin-right:4px"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0110 0v4"/></svg>kv</div>
     <div class="footer-links">
       <a href="https://github.com/SatishoBananamoto/kv-secrets">GitHub</a>
       <a href="https://pypi.org/project/kv-secrets/">PyPI</a>
@@ -241,7 +241,7 @@ document.getElementById('feedback-form').addEventListener('submit', function(e) 
   var message = document.getElementById('message').value;
   var subject = encodeURIComponent('[kv feedback] ' + type + ' from ' + name);
   var body = encodeURIComponent('From: ' + name + ' (' + email + ')\nType: ' + type + '\n\n' + message);
-  window.location.href = 'mailto:hello@kvsecure.com?subject=' + subject + '&body=' + body;
+  window.location.href = 'mailto:support@kvsecure.com?subject=' + subject + '&body=' + body;
   document.getElementById('feedback-form').style.display = 'none';
   document.getElementById('success-msg').classList.add('show');
 });
