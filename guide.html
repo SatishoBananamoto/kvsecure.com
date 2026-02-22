@@ -93,9 +93,13 @@ footer { border-top: 1px solid var(--border); padding: 40px 0; }
 .footer-links a:hover { color: var(--text); }
 .footer-tagline { width: 100%; text-align: center; color: var(--text-muted); font-size: 0.8rem; margin-top: 16px; }
 
+.nav-toggle { display: none; background: none; border: none; color: var(--text); font-size: 1.5rem; cursor: pointer; }
+
 @media (max-width: 767px) {
   .page-header h1 { font-size: 1.8rem; }
-  .nav-links { display: none; }
+  .nav-links { display: none; position: absolute; top: 60px; left: 0; right: 0; background: var(--bg); border-bottom: 1px solid var(--border); flex-direction: column; padding: 20px 24px; gap: 16px; }
+  .nav-links.open { display: flex; }
+  .nav-toggle { display: block; }
   .cmd-table { font-size: 0.75rem; }
   .cmd-table td:first-child { white-space: normal; }
   .footer-inner { justify-content: center; text-align: center; }
@@ -107,6 +111,7 @@ footer { border-top: 1px solid var(--border); padding: 40px 0; }
 <nav>
   <div class="nav-inner">
     <a href="/" class="nav-logo"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-3px;margin-right:4px"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0110 0v4"/></svg>kv</a>
+    <button class="nav-toggle" id="nav-toggle" aria-label="Menu" aria-expanded="false">&#9776;</button>
     <div class="nav-links">
       <a href="/#install">Install</a>
       <a href="/#features">Features</a>
@@ -356,6 +361,19 @@ footer { border-top: 1px solid var(--border); padding: 40px 0; }
     <p class="footer-tagline">Made for developers who don't paste API keys into AI chat.</p>
   </div>
 </footer>
+
+<script>
+(function() {
+  var toggle = document.getElementById('nav-toggle');
+  var navLinks = document.querySelector('.nav-links');
+  if (toggle && navLinks) {
+    toggle.addEventListener('click', function() {
+      var open = navLinks.classList.toggle('open');
+      toggle.setAttribute('aria-expanded', open);
+    });
+  }
+})();
+</script>
 
 </body>
 </html>
