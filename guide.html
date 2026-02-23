@@ -358,7 +358,7 @@ footer { border-top: 1px solid var(--border); padding: 40px 0; }
 
       <h3>Setup steps</h3>
       <ol>
-        <li>Copy the base64url contents of your <code>.secrets/key</code> file (run <code>kv export-key</code> to get it)</li>
+        <li>Copy the raw contents of your <code>.secrets/key</code> file — this is already base64url-encoded</li>
         <li>Add it as a GitHub Actions secret named <code>KV_MASTER_KEY</code></li>
         <li>Commit <code>.secrets/*.enc</code> and <code>.secrets/config.json</code> to git</li>
         <li>The <code>.secrets/key</code> file is auto-gitignored — it never leaves your machine</li>

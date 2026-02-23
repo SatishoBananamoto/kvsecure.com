@@ -766,12 +766,13 @@ footer {
       method: 'POST',
       headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
       body: JSON.stringify({ email: email, _subject: 'Team Waitlist: ' + email, type: 'waitlist' })
-    }).then(function() {
+    }).then(function(res) {
+      if (!res.ok) throw new Error('Server error');
       form.style.display = 'none';
       msg.style.display = 'block';
     }).catch(function() {
-      form.style.display = 'none';
-      msg.textContent = 'Noted! We\'ll be in touch.';
+      msg.textContent = 'Something went wrong — email support@kvsecure.com instead.';
+      msg.style.color = 'var(--yellow)';
       msg.style.display = 'block';
     });
   });
