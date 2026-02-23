@@ -149,7 +149,7 @@ footer { border-top: 1px solid var(--border); padding: 40px 0; }
     <div class="faq-item">
       <button class="faq-q" id="faq-q-7" aria-expanded="false" aria-controls="faq-a-7">How do I share secrets with my team?</button>
       <div class="faq-a" id="faq-a-7" role="region" aria-labelledby="faq-q-7" hidden>
-        <p>For now, use <code>kv export --key</code> to get a shareable key string (<code>kvkey_...</code>). Send it to your teammate through a secure channel (Signal, 1Password, etc.). They import it with <code>kv import-key kvkey_...</code>. The upcoming team plan will add zero-knowledge cloud sync so sharing is automatic.</p>
+        <p>Use <code>kv export-key</code> to get a shareable key string (<code>kvkey_...</code>). Send it to your teammate through a secure channel (Signal, 1Password, etc.). They import it with <code>kv import-key kvkey_...</code>. The upcoming team plan will add zero-knowledge cloud sync so sharing is automatic.</p>
       </div>
     </div>
 
@@ -197,6 +197,7 @@ footer { border-top: 1px solid var(--border); padding: 40px 0; }
     <div class="footer-links">
       <a href="https://github.com/SatishoBananamoto/kv-secrets">GitHub</a>
       <a href="https://pypi.org/project/kv-secrets/">PyPI</a>
+      <a href="https://github.com/SatishoBananamoto/kv-secrets/blob/main/SECURITY.md">Security</a>
       <a href="guide.html">Guide</a>
       <a href="feedback.html">Feedback</a>
     </div>

@@ -271,6 +271,21 @@ footer {
 .footer-links a:hover { color: var(--text); }
 .footer-tagline { width: 100%; text-align: center; color: var(--text-muted); font-size: 0.8rem; margin-top: 16px; }
 
+/* ── Trust Strip ───────────────────────────────────────── */
+.trust-strip { text-align: center; padding: 48px 0; }
+.trust-badges { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; margin-bottom: 16px; }
+.trust-badges img { height: 22px; }
+.trust-text { color: var(--text-muted); font-size: 0.85rem; }
+.trust-text a { color: var(--accent); }
+
+/* ── Waitlist ──────────────────────────────────────────── */
+.waitlist-form { display: flex; gap: 8px; margin-top: 16px; max-width: 360px; }
+.waitlist-form input { flex: 1; padding: 10px 14px; border: 1px solid var(--border); border-radius: 8px; background: var(--bg); color: var(--text); font-size: 0.85rem; font-family: var(--font); }
+.waitlist-form input:focus { outline: none; border-color: var(--accent); }
+.waitlist-form button { padding: 10px 20px; border: none; border-radius: 8px; background: var(--accent); color: #000; font-weight: 600; font-size: 0.85rem; cursor: pointer; white-space: nowrap; }
+.waitlist-form button:hover { opacity: 0.85; }
+.waitlist-msg { font-size: 0.8rem; color: var(--green); margin-top: 8px; display: none; }
+
 /* ── Scroll Reveal ─────────────────────────────────────── */
 .reveal {
   opacity: 0; transform: translateY(30px);
@@ -483,7 +498,7 @@ footer {
           <div class="terminal-bar"><div class="dot dot-r"></div><div class="dot dot-y"></div><div class="dot dot-g"></div></div>
 <pre><span class="p">$</span> <span class="c">kv setup</span> cursor
 <span class="v">  MCP configured for Cursor</span>
-<span class="o">  Tools: kv_get, kv_set, kv_run</span>
+<span class="o">  Tools: kv_status, kv_envs, kv_list, kv_run, kv_set, kv_rm, kv_get</span>
 
 <span class="p">$</span> <span class="c">kv setup</span> claude-code
 <span class="v">  MCP configured for Claude Code</span></pre>
@@ -544,10 +559,30 @@ footer {
           <li>Audit logs</li>
           <li>Priority support</li>
         </ul>
-        <span class="price-cta price-cta-soon">Coming Soon</span>
+        <div style="text-align:center">
+          <p style="color:var(--text-muted);font-size:0.85rem;margin-bottom:4px;">Get notified when teams launch:</p>
+          <form class="waitlist-form" id="waitlist-form">
+            <input type="email" placeholder="you@company.com" required aria-label="Email for team waitlist">
+            <button type="submit">Notify me</button>
+          </form>
+          <p class="waitlist-msg" id="waitlist-msg">You're on the list!</p>
+        </div>
       </div>
 
     </div>
+  </div>
+</section>
+
+<!-- ── Trust Strip ────────────────────────────────────────── -->
+<section class="trust-strip reveal">
+  <div class="container">
+    <div class="trust-badges">
+      <a href="https://github.com/SatishoBananamoto/kv-secrets/actions/workflows/test.yml"><img src="https://github.com/SatishoBananamoto/kv-secrets/actions/workflows/test.yml/badge.svg" alt="CI tests passing"></a>
+      <a href="https://pypi.org/project/kv-secrets/"><img src="https://img.shields.io/pypi/v/kv-secrets" alt="PyPI version"></a>
+      <img src="https://img.shields.io/pypi/pyversions/kv-secrets" alt="Python 3.10+">
+      <a href="https://github.com/SatishoBananamoto/kv-secrets/blob/main/LICENSE"><img src="https://img.shields.io/github/license/SatishoBananamoto/kv-secrets" alt="MIT license"></a>
+    </div>
+    <p class="trust-text">Open source (MIT) &middot; ChaCha20-Poly1305 encryption &middot; <a href="https://github.com/SatishoBananamoto/kv-secrets/blob/main/SECURITY.md">Security policy</a></p>
   </div>
 </section>
 
@@ -561,6 +596,7 @@ footer {
       <div class="footer-links">
         <a href="https://github.com/SatishoBananamoto/kv-secrets">GitHub</a>
         <a href="https://pypi.org/project/kv-secrets/">PyPI</a>
+        <a href="https://github.com/SatishoBananamoto/kv-secrets/blob/main/SECURITY.md">Security</a>
         <a href="https://github.com/SatishoBananamoto/kv-secrets#readme">Docs</a>
       </div>
       <p class="footer-tagline">Made for developers who don't paste API keys into AI chat.</p>
@@ -715,6 +751,29 @@ footer {
 
   document.querySelectorAll('.reveal').forEach(function(el) {
     observer.observe(el);
+  });
+})();
+
+// ── Team waitlist form ──
+(function() {
+  var form = document.getElementById('waitlist-form');
+  var msg = document.getElementById('waitlist-msg');
+  if (!form) return;
+  form.addEventListener('submit', function(e) {
+    e.preventDefault();
+    var email = form.querySelector('input[type="email"]').value;
+    fetch('https://formsubmit.co/ajax/support@kvsecure.com', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+      body: JSON.stringify({ email: email, _subject: 'Team Waitlist: ' + email, type: 'waitlist' })
+    }).then(function() {
+      form.style.display = 'none';
+      msg.style.display = 'block';
+    }).catch(function() {
+      form.style.display = 'none';
+      msg.textContent = 'Noted! We\'ll be in touch.';
+      msg.style.display = 'block';
+    });
   });
 })();
 </script>

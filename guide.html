@@ -141,6 +141,7 @@ footer { border-top: 1px solid var(--border); padding: 40px 0; }
       <li><a href="#mcp">MCP Setup</a></li>
       <li><a href="#environments">Environments</a></li>
       <li><a href="#commands">All Commands</a></li>
+      <li><a href="#cicd">CI/CD</a></li>
       <li><a href="#security">Security</a></li>
       <li><a href="#best-practices">Best Practices</a></li>
     </ul>
@@ -267,24 +268,29 @@ footer { border-top: 1px solid var(--border); padding: 40px 0; }
       <p>kv supports multiple environments (dev, staging, prod) with isolated encryption keys derived from BLAKE2b.</p>
       <div class="terminal">
         <div class="terminal-bar"><div class="dot dot-r"></div><div class="dot dot-y"></div><div class="dot dot-g"></div><span>terminal</span></div>
-<pre><span class="p">$</span> <span class="c">kv env</span> prod
-<span class="v">  switched to prod</span>
+<pre><span class="p">$</span> <span class="c">kv env create</span> staging
+<span class="v">  created environment: staging</span>
 
-<span class="p">$</span> <span class="c">kv set</span> <span class="k">API_KEY</span>=<span class="v">sk-live-production-key</span>
+<span class="p">$</span> <span class="c">kv env create</span> prod
+<span class="v">  created environment: prod</span>
+
+<span class="p">$</span> <span class="c">kv set</span> <span class="k">API_KEY</span>=<span class="v">sk-live-production-key</span> <span class="k">--env prod</span>
 <span class="o">  set API_KEY  (prod)  [encrypted]</span>
 
 <span class="p">$</span> <span class="c">kv envs</span>
-<span class="o">  dev   (2 secrets)</span>
-<span class="o">  prod  (1 secret)  *active</span>
+<span class="o">  dev      (2 secrets)</span>
+<span class="o">  staging  (0 secrets)</span>
+<span class="o">  prod     (1 secret)</span>
 
-<span class="p">$</span> <span class="c">kv run</span> <span class="k">-e dev</span> <span class="v">python app.py</span>
-<span class="o">  (runs with dev secrets, even when prod is active)</span></pre>
+<span class="p">$</span> <span class="c">kv run</span> <span class="k">--env prod</span> <span class="v">-- python deploy.py</span>
+<span class="o">  (runs with prod secrets injected)</span></pre>
       </div>
     </div>
 
     <!-- All Commands -->
     <div class="guide-section" id="commands">
       <h2>Command Reference</h2>
+      <h3>Local commands</h3>
       <table class="cmd-table">
         <thead><tr><th>Command</th><th>Description</th></tr></thead>
         <tbody>
@@ -293,17 +299,72 @@ footer { border-top: 1px solid var(--border); padding: 40px 0; }
           <tr><td>kv get KEY</td><td>Retrieve and decrypt a secret</td></tr>
           <tr><td>kv ls</td><td>List all secret names (masked values)</td></tr>
           <tr><td>kv rm KEY</td><td>Remove a secret</td></tr>
-          <tr><td>kv run CMD</td><td>Run command with secrets as env vars</td></tr>
+          <tr><td>kv run -- CMD</td><td>Run command with secrets as env vars</td></tr>
           <tr><td>kv export</td><td>Export secrets as .env format</td></tr>
           <tr><td>kv import FILE</td><td>Import secrets from .env file</td></tr>
           <tr><td>kv envs</td><td>List all environments</td></tr>
-          <tr><td>kv env NAME</td><td>Switch active environment</td></tr>
+          <tr><td>kv env create NAME</td><td>Create a new environment</td></tr>
+          <tr><td>kv env copy SRC DST</td><td>Copy secrets between environments</td></tr>
+          <tr><td>kv export-key</td><td>Export master key as shareable <code>kvkey_...</code> string</td></tr>
+          <tr><td>kv import-key TOKEN</td><td>Import a shared master key</td></tr>
           <tr><td>kv status</td><td>Show project status</td></tr>
-          <tr><td>kv setup EDITOR</td><td>Configure MCP for an AI editor</td></tr>
-          <tr><td>kv mcp</td><td>Print MCP config JSON</td></tr>
+          <tr><td>kv doctor</td><td>Check project health and configuration</td></tr>
           <tr><td>kv version</td><td>Show version</td></tr>
         </tbody>
       </table>
+
+      <h3>MCP commands</h3>
+      <table class="cmd-table">
+        <thead><tr><th>Command</th><th>Description</th></tr></thead>
+        <tbody>
+          <tr><td>kv setup EDITOR</td><td>Configure MCP for an AI editor</td></tr>
+          <tr><td>kv mcp</td><td>Print MCP config JSON</td></tr>
+        </tbody>
+      </table>
+
+      <h3>Remote commands <span style="color:var(--text-muted);font-size:0.8rem;font-weight:400">(requires <a href="https://kvsecure.com">kvsecure.com</a> account — coming soon)</span></h3>
+      <table class="cmd-table">
+        <thead><tr><th>Command</th><th>Description</th></tr></thead>
+        <tbody>
+          <tr><td>kv signup</td><td>Create a kv cloud account</td></tr>
+          <tr><td>kv login / logout</td><td>Sign in / sign out</td></tr>
+          <tr><td>kv push / pull</td><td>Sync encrypted secrets to cloud</td></tr>
+          <tr><td>kv remote</td><td>Show remote sync status</td></tr>
+          <tr><td>kv team</td><td>Manage team members (invite, revoke, list)</td></tr>
+          <tr><td>kv token</td><td>Manage scoped API tokens for CI/CD</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- CI/CD -->
+    <div class="guide-section" id="cicd">
+      <h2>CI/CD Integration</h2>
+      <p>Your <code>.enc</code> files are safe to commit — they're encrypted noise without the key. In CI, kv reads the master key from the <code>KV_MASTER_KEY</code> environment variable when the key file isn't present.</p>
+
+      <h3>GitHub Actions</h3>
+      <div class="terminal">
+        <div class="terminal-bar"><div class="dot dot-r"></div><div class="dot dot-y"></div><div class="dot dot-g"></div><span>workflow.yml</span></div>
+<pre><span class="k">steps:</span>
+  <span class="c">- uses:</span> actions/checkout@v4
+
+  <span class="c">- name:</span> Install kv
+    <span class="c">run:</span> pip install kv-secrets
+
+  <span class="c">- name:</span> Run tests with secrets
+    <span class="c">run:</span> kv run -- pytest
+    <span class="k">env:</span>
+      <span class="v">KV_MASTER_KEY: ${{ secrets.KV_MASTER_KEY }}</span></pre>
+      </div>
+
+      <h3>Setup steps</h3>
+      <ol>
+        <li>Copy the base64url contents of your <code>.secrets/key</code> file (run <code>kv export-key</code> to get it)</li>
+        <li>Add it as a GitHub Actions secret named <code>KV_MASTER_KEY</code></li>
+        <li>Commit <code>.secrets/*.enc</code> and <code>.secrets/config.json</code> to git</li>
+        <li>The <code>.secrets/key</code> file is auto-gitignored — it never leaves your machine</li>
+      </ol>
+
+      <div class="tip"><strong>Tip:</strong> Run <code>kv doctor</code> locally to verify your project is healthy before pushing to CI. It detects missing keys, broken configs, and validates encryption.</div>
     </div>
 
     <!-- Security -->
@@ -331,6 +392,8 @@ footer { border-top: 1px solid var(--border); padding: 40px 0; }
       </ul>
 
       <div class="warning"><strong>Never commit your master key.</strong> If you suspect it's been exposed, generate a new one and re-encrypt your secrets.</div>
+
+      <p>For vulnerability reporting and full security details, see <a href="https://github.com/SatishoBananamoto/kv-secrets/blob/main/SECURITY.md">SECURITY.md</a>.</p>
     </div>
 
     <!-- Best Practices -->
@@ -339,8 +402,8 @@ footer { border-top: 1px solid var(--border); padding: 40px 0; }
       <ol>
         <li><strong>Use <code>kv run</code> instead of <code>kv get</code></strong> — inject secrets as environment variables so they never appear in your terminal or AI chat history.</li>
         <li><strong>Use safe mode by default</strong> — only enable <code>--allow-reveal</code> when you explicitly need the AI to read a value.</li>
-        <li><strong>Use separate environments</strong> — keep dev and prod secrets isolated with <code>kv env prod</code>.</li>
-        <li><strong>Share keys securely</strong> — use <code>kv export --key</code> and send the <code>kvkey_...</code> string via Signal or 1Password, never Slack or email.</li>
+        <li><strong>Use separate environments</strong> — keep dev and prod secrets isolated with <code>kv env create prod</code>.</li>
+        <li><strong>Share keys securely</strong> — use <code>kv export-key</code> and send the <code>kvkey_...</code> string via Signal or 1Password, never Slack or email.</li>
         <li><strong>Commit .enc files</strong> — they're encrypted and safe. This lets your team clone and decrypt with the shared key.</li>
         <li><strong>Import existing .env files</strong> — use <code>kv import .env</code> to encrypt them, then delete the plaintext .env.</li>
       </ol>
@@ -355,6 +418,7 @@ footer { border-top: 1px solid var(--border); padding: 40px 0; }
     <div class="footer-links">
       <a href="https://github.com/SatishoBananamoto/kv-secrets">GitHub</a>
       <a href="https://pypi.org/project/kv-secrets/">PyPI</a>
+      <a href="https://github.com/SatishoBananamoto/kv-secrets/blob/main/SECURITY.md">Security</a>
       <a href="faq.html">FAQ</a>
       <a href="feedback.html">Feedback</a>
     </div>
