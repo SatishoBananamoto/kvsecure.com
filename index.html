@@ -195,11 +195,29 @@ nav {
   font-family: var(--font); transition: color 0.15s;
 }
 .copy-btn:hover { color: var(--text); border-color: var(--text-muted); }
-.quickstart { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; max-width: 800px; margin: 0 auto; }
+.quickstart { display: grid; grid-template-columns: repeat(4, 1fr); gap: 24px; max-width: 900px; margin: 0 auto; }
 .qs-step { text-align: center; }
 .qs-step .num { display: inline-flex; align-items: center; justify-content: center; width: 32px; height: 32px; border-radius: 50%; background: var(--accent-dim); color: var(--accent); font-weight: 700; font-size: 0.85rem; margin-bottom: 12px; }
 .qs-step code { display: block; font-family: var(--mono); font-size: 0.9rem; color: var(--accent); margin-bottom: 6px; }
 .qs-step p { font-size: 0.85rem; color: var(--text-muted); }
+
+/* ── The Problem ──────────────────────────────────────── */
+.the-problem h2 { font-size: 2rem; text-align: center; margin-bottom: 48px; font-weight: 700; }
+.problem-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; margin-bottom: 32px; }
+.problem-card {
+  background: var(--bg-card); border: 1px solid var(--border); border-radius: 10px;
+  padding: 28px; text-align: center;
+}
+.problem-card h3 { font-size: 1.1rem; margin-bottom: 10px; font-weight: 600; color: var(--red); }
+.problem-card p { font-size: 0.9rem; color: var(--text-muted); line-height: 1.6; }
+.problem-bottom { text-align: center; font-size: 1.05rem; color: var(--text-muted); }
+
+/* ── How kv Works ─────────────────────────────────────── */
+.how-kv-works { background: var(--bg-card); border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); }
+.how-kv-works h2 { font-size: 2rem; text-align: center; margin-bottom: 48px; font-weight: 700; }
+.how-kv-works .terminal { max-width: 700px; margin: 0 auto 24px; }
+.how-kv-works .terminal pre { font-size: 0.85rem; padding: 24px; line-height: 2; }
+.how-kv-caption { text-align: center; max-width: 680px; margin: 0 auto; font-size: 0.95rem; color: var(--text-muted); line-height: 1.7; }
 
 /* ── Features ──────────────────────────────────────────── */
 .features h2 { font-size: 2rem; text-align: center; margin-bottom: 48px; font-weight: 700; }
@@ -214,21 +232,23 @@ nav {
 .feature-card p { font-size: 0.9rem; color: var(--text-muted); line-height: 1.6; }
 .coming { display: inline-block; font-size: 0.7rem; background: var(--accent-dim); color: var(--accent); padding: 2px 8px; border-radius: 4px; margin-left: 8px; vertical-align: middle; }
 
-/* ── How It Works ──────────────────────────────────────── */
-.how { background: var(--bg-card); border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); }
-.how h2 { font-size: 2rem; text-align: center; margin-bottom: 48px; font-weight: 700; }
-.how-steps { display: grid; grid-template-columns: repeat(3, 1fr); gap: 32px; }
-.how-step { text-align: center; display: flex; flex-direction: column; height: 100%; }
-.step-num {
-  display: inline-flex; align-items: center; justify-content: center;
-  width: 48px; height: 48px; border-radius: 50%;
-  background: var(--accent-dim); color: var(--accent);
-  font-size: 1.2rem; font-weight: 700; margin: 0 auto 16px;
+/* ── Comparison ───────────────────────────────────────── */
+.comparison h2 { font-size: 2rem; text-align: center; margin-bottom: 48px; font-weight: 700; }
+.comparison-table-wrap { overflow-x: auto; }
+.comparison-table {
+  width: 100%; border-collapse: collapse; font-size: 0.9rem;
+  background: var(--bg-card); border: 1px solid var(--border); border-radius: 10px;
+  overflow: hidden;
 }
-.how-step h3 { font-size: 1.1rem; margin-bottom: 8px; }
-.how-step p { font-size: 0.9rem; color: var(--text-muted); margin-bottom: 16px; flex: 1; }
-.how-step .terminal { text-align: left; }
-.how-step .terminal pre { font-size: 0.8rem; padding: 14px; min-height: 168px; }
+.comparison-table th, .comparison-table td {
+  padding: 14px 18px; text-align: center; border-bottom: 1px solid var(--border);
+}
+.comparison-table th { font-weight: 600; color: var(--text); background: var(--bg-terminal-bar); }
+.comparison-table th:first-child, .comparison-table td:first-child { text-align: left; font-weight: 500; }
+.comparison-table td { color: var(--text-muted); }
+.comparison-table td:nth-child(2) { color: var(--green); font-weight: 600; }
+.comparison-table tr:last-child td { border-bottom: none; }
+.comparison-table thead th:nth-child(2) { color: var(--accent); }
 
 /* ── Pricing ───────────────────────────────────────────── */
 .pricing h2 { font-size: 2rem; text-align: center; margin-bottom: 12px; font-weight: 700; }
@@ -299,14 +319,15 @@ footer {
 @media (max-width: 1023px) {
   .hero-grid { grid-template-columns: 1fr; gap: 40px; }
   .features-grid { grid-template-columns: repeat(2, 1fr); }
-  .how-steps { grid-template-columns: repeat(2, 1fr); }
+  .problem-grid { grid-template-columns: repeat(2, 1fr); }
+  .quickstart { grid-template-columns: repeat(2, 1fr); }
 }
 @media (max-width: 767px) {
   .hero h1 { font-size: 2rem; }
   .hero .sub { font-size: 1rem; }
   section { padding: 56px 0; }
   .features-grid { grid-template-columns: 1fr; }
-  .how-steps { grid-template-columns: 1fr; }
+  .problem-grid { grid-template-columns: 1fr; }
   .quickstart { grid-template-columns: 1fr; }
   .pricing-grid { grid-template-columns: 1fr; }
   .nav-links { display: none; position: absolute; top: 60px; left: 0; right: 0; background: var(--bg); border-bottom: 1px solid var(--border); flex-direction: column; padding: 20px 24px; gap: 16px; }
@@ -314,6 +335,8 @@ footer {
   .nav-toggle { display: block; }
   .footer-inner { justify-content: center; text-align: center; }
   .editor-badges { gap: 16px; }
+  .comparison-table { font-size: 0.8rem; }
+  .comparison-table th, .comparison-table td { padding: 10px 12px; }
 }
 
 /* ── Animations (respects reduced-motion) ──────────────── */
@@ -336,10 +359,9 @@ footer {
     <button class="nav-toggle" id="nav-toggle" aria-label="Menu" aria-expanded="false">&#9776;</button>
     <div class="nav-links">
       <a href="#install">Install</a>
+      <a href="#how-kv-works">How It Works</a>
       <a href="#features">Features</a>
-      <a href="guide.html">Guide</a>
-      <a href="faq.html">FAQ</a>
-      <a href="feedback.html">Feedback</a>
+      <a href="#pricing">Pricing</a>
       <a href="https://github.com/SatishoBananamoto/kv-secrets" class="nav-gh">
         <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/></svg>
         GitHub
@@ -354,8 +376,8 @@ footer {
   <div class="container">
     <div class="hero-grid">
       <div>
-        <h1>Encrypted secrets.<br><span>Safe for AI.</span></h1>
-        <p class="sub">Stop pasting API keys into AI chat. <strong>kv</strong> encrypts secrets with ChaCha20-Poly1305 and lets your AI editor use them safely through MCP &mdash; without ever seeing the values.</p>
+        <h1>Your AI agent uses your API keys.<br><span>It should never see them.</span></h1>
+        <p class="sub"><strong>kv</strong> encrypts your secrets and lets AI coding agents make API calls without possessing the keys. Like ssh-agent, but for API credentials.</p>
         <div class="hero-ctas">
           <a href="#install" class="btn-primary">Get Started</a>
           <a href="https://github.com/SatishoBananamoto/kv-secrets" class="btn-outline">
@@ -408,19 +430,69 @@ footer {
       <div class="qs-step">
         <div class="num">1</div>
         <code>kv init</code>
-        <p>Create encrypted store</p>
+        <p>Create vault (passphrase prompt)</p>
       </div>
       <div class="qs-step">
         <div class="num">2</div>
-        <code>kv set KEY=VALUE</code>
-        <p>Encrypt a secret</p>
+        <code>kv set OPENAI_API_KEY</code>
+        <p>Store your key</p>
       </div>
       <div class="qs-step">
         <div class="num">3</div>
+        <code>kv unlock</code>
+        <p>Start the daemon</p>
+      </div>
+      <div class="qs-step">
+        <div class="num">4</div>
         <code>kv setup cursor</code>
-        <p>Connect to your AI editor</p>
+        <p>Connect your editor</p>
       </div>
     </div>
+  </div>
+</section>
+
+<!-- ── The Problem ─────────────────────────────────────── -->
+<section class="the-problem reveal" id="the-problem">
+  <div class="container">
+    <h2>The problem with every other approach</h2>
+    <div class="problem-grid">
+      <div class="problem-card">
+        <h3>.env files</h3>
+        <p>Agent reads the file. Key in context window. Leaked in logs.</p>
+      </div>
+      <div class="problem-card">
+        <h3>1Password SDK</h3>
+        <p>secrets.resolve() returns plaintext to agent memory. One prompt injection away.</p>
+      </div>
+      <div class="problem-card">
+        <h3>Paste in chat</h3>
+        <p>Key in conversation history. Visible to anyone with access. Forever.</p>
+      </div>
+    </div>
+    <p class="problem-bottom">Every approach gives the agent your key. <strong>kv doesn't.</strong></p>
+  </div>
+</section>
+
+<!-- ── How kv Works ────────────────────────────────────── -->
+<section class="how-kv-works reveal" id="how-kv-works">
+  <div class="container">
+    <h2>How kv keeps your keys safe</h2>
+    <div class="terminal">
+      <div class="terminal-bar">
+        <div class="dot dot-r"></div><div class="dot dot-y"></div><div class="dot dot-g"></div>
+        <span>kv_api flow</span>
+      </div>
+<pre>
+<span class="o">Agent:</span> <span class="v">"Call the OpenAI API"</span>
+  <span class="o">&#8595;</span>
+<span class="c">kv_api</span>(<span class="k">provider</span>=<span class="v">"openai"</span>, <span class="k">path</span>=<span class="v">"/v1/chat/completions"</span>, <span class="k">body</span>={...})
+  <span class="o">&#8595;</span>
+<span class="o">kv daemon:</span> looks up <span class="k">OPENAI_API_KEY</span> <span class="o">&#8594;</span> adds auth header <span class="o">&#8594;</span> makes HTTP call
+  <span class="o">&#8595;</span>
+<span class="o">Agent gets:</span> <span class="v">response body</span> <span class="o">(key never appeared)</span>
+</pre>
+    </div>
+    <p class="how-kv-caption">The API key stays in the daemon's memory. It never enters the agent's process, context window, logs, or filesystem. Same security model as ssh-agent.</p>
   </div>
 </section>
 
@@ -431,95 +503,105 @@ footer {
     <div class="features-grid">
 
       <div class="feature-card">
-        <div class="feature-icon">&#x1F916;</div>
-        <h3>MCP Integration</h3>
-        <p>One command connects kv to Cursor, Claude Code, or VS Code. Your AI agent runs code with secrets injected &mdash; without ever seeing the values.</p>
-      </div>
-
-      <div class="feature-card">
         <div class="feature-icon">&#x1F510;</div>
-        <h3>Military-grade encryption</h3>
-        <p>ChaCha20-Poly1305 AEAD with 256-bit keys. The same cipher trusted by WireGuard and TLS 1.3. Authenticated encryption detects any tampering.</p>
+        <h3>Daemon proxy (kv_api)</h3>
+        <p>Agent makes API calls through the daemon. The key never leaves. Like ssh-agent for API credentials. Built-in support for OpenAI, Anthropic, Google, GitHub + custom providers.</p>
       </div>
 
       <div class="feature-card">
         <div class="feature-icon">&#x1F6E1;</div>
-        <h3>Security profiles</h3>
-        <p>Control what your AI can do. <strong>Safe</strong>: list + run. <strong>Mutate</strong>: store secrets. <strong>Reveal</strong>: read values. You decide the permissions.</p>
+        <h3>Tamper-evident audit log</h3>
+        <p>Every API call logged with hash-chain integrity. <code>kv audit --verify</code> proves your logs weren't modified. No competitor has this.</p>
+      </div>
+
+      <div class="feature-card">
+        <div class="feature-icon">&#x1F511;</div>
+        <h3>Passphrase + 2FA</h3>
+        <p>Interface barrier that AI agents can't bypass. Interactive passphrase prompt + optional TOTP. Without it, the vault stays locked.</p>
       </div>
 
       <div class="feature-card">
         <div class="feature-icon">&#x1F4BE;</div>
-        <h3>Safe to commit</h3>
-        <p>Encrypted <code>.enc</code> files live in git. Key names and values are both encrypted. Only the master key stays local.</p>
+        <h3>Subprocess sandbox (kv_run)</h3>
+        <p>For databases, cloud SDKs, and legacy apps that need env vars. Command validation, network isolation, output redaction, file scanning.</p>
       </div>
 
       <div class="feature-card">
         <div class="feature-icon">&#x1F30D;</div>
-        <h3>Multi-environment</h3>
-        <p>dev, staging, prod &mdash; each with isolated derived keys via BLAKE2b. Switch environments in one command.</p>
+        <h3>Client-agnostic</h3>
+        <p>Works with Claude Code, Cursor, VS Code &mdash; any MCP client. Passphrase protection ensures same security regardless of editor.</p>
       </div>
 
       <div class="feature-card">
-        <div class="feature-icon">&#x1F465;</div>
-        <h3>Team ready <span class="coming">Coming Soon</span></h3>
-        <p>Zero-knowledge cloud sync. Role-based access. Scoped CI/CD tokens. Audit logs. Share one key, everyone syncs.</p>
+        <div class="feature-icon">&#x1F6AB;</div>
+        <h3>SSRF protection</h3>
+        <p>Custom providers validated against private IPs and non-HTTPS. DNS rebinding defense. Built-in providers are trusted. Your keys can't be redirected.</p>
       </div>
 
     </div>
   </div>
 </section>
 
-<!-- ── How It Works ────────────────────────────────────── -->
-<section class="how reveal" id="how">
+<!-- ── Comparison ──────────────────────────────────────── -->
+<section class="comparison reveal" id="comparison">
   <div class="container">
-    <h2>How it works with your AI editor</h2>
-    <div class="how-steps">
-
-      <div class="how-step">
-        <div class="step-num">1</div>
-        <h3>Encrypt</h3>
-        <p>Store secrets encrypted. Only you hold the key.</p>
-        <div class="terminal">
-          <div class="terminal-bar"><div class="dot dot-r"></div><div class="dot dot-y"></div><div class="dot dot-g"></div></div>
-<pre><span class="p">$</span> <span class="c">kv set</span> <span class="k">API_KEY</span>=<span class="v">sk_live_abc123</span>
-<span class="o">  set API_KEY  (dev)  [encrypted]</span>
-
-<span class="p">$</span> <span class="c">kv set</span> <span class="k">DB_URL</span>=<span class="v">postgres://...</span>
-<span class="o">  set DB_URL  (dev)  [encrypted]</span></pre>
-        </div>
-      </div>
-
-      <div class="how-step">
-        <div class="step-num">2</div>
-        <h3>Connect</h3>
-        <p>One command configures MCP for your editor.</p>
-        <div class="terminal">
-          <div class="terminal-bar"><div class="dot dot-r"></div><div class="dot dot-y"></div><div class="dot dot-g"></div></div>
-<pre><span class="p">$</span> <span class="c">kv setup</span> cursor
-<span class="v">  MCP configured for Cursor</span>
-<span class="o">  Tools: kv_status, kv_envs, kv_list, kv_run, kv_set, kv_rm, kv_get</span>
-
-<span class="p">$</span> <span class="c">kv setup</span> claude-code
-<span class="v">  MCP configured for Claude Code</span></pre>
-        </div>
-      </div>
-
-      <div class="how-step">
-        <div class="step-num">3</div>
-        <h3>Run safely</h3>
-        <p>AI agent runs your code. Secrets injected at runtime. Never in chat.</p>
-        <div class="terminal">
-          <div class="terminal-bar"><div class="dot dot-r"></div><div class="dot dot-y"></div><div class="dot dot-g"></div></div>
-<pre><span class="p">$</span> <span class="c">kv run</span> <span class="v">pytest</span>
-<span class="o">  injecting 3 secrets into env...</span>
-<span class="v">  === 12 passed in 0.8s ===</span>
-
-<span class="o">  AI agent never sees your keys.</span>
-<span class="o">  Secrets stay encrypted at rest.</span></pre>
-        </div>
-      </div>
-
+    <h2>How kv compares</h2>
+    <div class="comparison-table-wrap">
+      <table class="comparison-table">
+        <thead>
+          <tr>
+            <th></th>
+            <th>kv</th>
+            <th>.env files</th>
+            <th>1Password CLI</th>
+            <th>AgentSecrets</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Key never enters agent</td>
+            <td>kv_api</td>
+            <td>No</td>
+            <td>No (SDK returns plaintext)</td>
+            <td>Yes</td>
+          </tr>
+          <tr>
+            <td>MCP native</td>
+            <td>Yes</td>
+            <td>No</td>
+            <td>No</td>
+            <td>Added later</td>
+          </tr>
+          <tr>
+            <td>Subprocess sandbox</td>
+            <td>kv_run</td>
+            <td>No</td>
+            <td>No</td>
+            <td>No</td>
+          </tr>
+          <tr>
+            <td>Tamper-evident audit</td>
+            <td>Yes</td>
+            <td>No</td>
+            <td>Enterprise</td>
+            <td>No</td>
+          </tr>
+          <tr>
+            <td>Passphrase + 2FA</td>
+            <td>Yes</td>
+            <td>No</td>
+            <td>Via app</td>
+            <td>No</td>
+          </tr>
+          <tr>
+            <td>Free &amp; open source</td>
+            <td>Yes</td>
+            <td>Yes</td>
+            <td>No</td>
+            <td>Partial</td>
+          </tr>
+        </tbody>
+      </table>
     </div>
   </div>
 </section>
@@ -536,12 +618,12 @@ footer {
         <div class="price-amount">$0</div>
         <div class="price-period">forever</div>
         <ul class="price-features">
+          <li>Daemon proxy for API calls (kv_api)</li>
+          <li>Tamper-evident audit logging</li>
           <li>ChaCha20-Poly1305 encryption</li>
+          <li>Dynamic provider registry</li>
           <li>MCP integration (Cursor, Claude Code, VS Code)</li>
-          <li>Unlimited secrets &amp; environments</li>
-          <li>Secret injection into any command</li>
-          <li>.env import &amp; export</li>
-          <li>Works on Windows, macOS, Linux</li>
+          <li>Unlimited secrets, environments, providers</li>
         </ul>
         <a href="#install" class="price-cta price-cta-primary">Install Now</a>
       </div>
@@ -616,25 +698,19 @@ footer {
     { text: '$ ', cls: 'p', delay: 200 },
     { text: 'kv init', cls: 'c', delay: 0 },
     { text: '\n', delay: 200 },
-    { text: '  kv \u2014 initialized\n', cls: 'o', delay: 100, instant: true },
-    { text: '  Master key   .secrets/key  ', cls: 'o', delay: 0, instant: true },
-    { text: '(DO NOT COMMIT)', cls: 'r', delay: 0, instant: true },
-    { text: '\n\n', delay: 400 },
-    { text: '$ ', cls: 'p', delay: 0 },
+    { text: '  vault created (passphrase-protected)\n\n', cls: 'o', delay: 100, instant: true },
+    { text: '$ ', cls: 'p', delay: 200 },
     { text: 'kv set', cls: 'c', delay: 0 },
     { text: ' ', cls: '', delay: 0 },
-    { text: 'API_KEY', cls: 'k', delay: 0 },
-    { text: '=', cls: '', delay: 0 },
-    { text: 'sk-live-abc123', cls: 'v', delay: 0 },
+    { text: 'OPENAI_API_KEY', cls: 'k', delay: 0 },
     { text: '\n', delay: 200 },
-    { text: '  set API_KEY  (dev)  [encrypted]\n\n', cls: 'o', delay: 100, instant: true },
-    { text: '$ ', cls: 'p', delay: 0 },
-    { text: 'kv setup', cls: 'c', delay: 0 },
-    { text: ' cursor', cls: '', delay: 0 },
+    { text: '  OPENAI_API_KEY saved (dev) [encrypted]\n\n', cls: 'o', delay: 100, instant: true },
+    { text: '$ ', cls: 'p', delay: 200 },
+    { text: 'kv unlock', cls: 'c', delay: 0 },
     { text: '\n', delay: 200 },
-    { text: '  MCP configured for Cursor\n\n', cls: 'v', delay: 100, instant: true },
-    { text: '  Your AI agent can now run code\n', cls: 'o', delay: 50, instant: true },
-    { text: '  with secrets \u2014 without seeing them.', cls: 'o', delay: 0, instant: true },
+    { text: '  vault unlocked (PID 1234)\n', cls: 'v', delay: 100, instant: true },
+    { text: '  Your AI agent can now use kv_api.\n', cls: 'o', delay: 50, instant: true },
+    { text: '  The key never leaves the daemon.', cls: 'o', delay: 0, instant: true },
   ];
 
   const out = document.getElementById('typed-output');
