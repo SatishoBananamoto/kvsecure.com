@@ -440,7 +440,7 @@ footer {
       <div class="qs-step">
         <div class="num">3</div>
         <code>kv unlock</code>
-        <p>Start the daemon</p>
+        <p>Start the agent</p>
       </div>
       <div class="qs-step">
         <div class="num">4</div>
@@ -487,12 +487,12 @@ footer {
   <span class="o">&#8595;</span>
 <span class="c">kv_api</span>(<span class="k">provider</span>=<span class="v">"openai"</span>, <span class="k">path</span>=<span class="v">"/v1/chat/completions"</span>, <span class="k">body</span>={...})
   <span class="o">&#8595;</span>
-<span class="o">kv daemon:</span> looks up <span class="k">OPENAI_API_KEY</span> <span class="o">&#8594;</span> adds auth header <span class="o">&#8594;</span> makes HTTP call
+<span class="o">kv agent:</span> looks up <span class="k">OPENAI_API_KEY</span> <span class="o">&#8594;</span> adds auth header <span class="o">&#8594;</span> makes HTTP call
   <span class="o">&#8595;</span>
 <span class="o">Agent gets:</span> <span class="v">response body</span> <span class="o">(key never appeared)</span>
 </pre>
     </div>
-    <p class="how-kv-caption">The API key stays in the daemon's memory. It never enters the agent's process, context window, logs, or filesystem. Same security model as ssh-agent.</p>
+    <p class="how-kv-caption">The API key stays in the kv agent's memory. It never enters the AI agent's process, context window, logs, or filesystem. Same security model as ssh-agent.</p>
   </div>
 </section>
 
@@ -504,8 +504,8 @@ footer {
 
       <div class="feature-card">
         <div class="feature-icon">&#x1F510;</div>
-        <h3>Daemon proxy (kv_api)</h3>
-        <p>Agent makes API calls through the daemon. The key never leaves. Like ssh-agent for API credentials. Built-in support for OpenAI, Anthropic, Google, GitHub + custom providers.</p>
+        <h3>Agent proxy (kv_api)</h3>
+        <p>Your AI agent makes API calls through the kv agent. The key never leaves. Like ssh-agent for API credentials. Built-in support for OpenAI, Anthropic, Google, GitHub + custom providers.</p>
       </div>
 
       <div class="feature-card">
@@ -618,7 +618,7 @@ footer {
         <div class="price-amount">$0</div>
         <div class="price-period">forever</div>
         <ul class="price-features">
-          <li>Daemon proxy for API calls (kv_api)</li>
+          <li>Agent proxy for API calls (kv_api)</li>
           <li>Tamper-evident audit logging</li>
           <li>ChaCha20-Poly1305 encryption</li>
           <li>Dynamic provider registry</li>
@@ -698,19 +698,28 @@ footer {
     { text: '$ ', cls: 'p', delay: 200 },
     { text: 'kv init', cls: 'c', delay: 0 },
     { text: '\n', delay: 200 },
-    { text: '  vault created (passphrase-protected)\n\n', cls: 'o', delay: 100, instant: true },
+    { text: '  Passphrase: ', cls: 'o', delay: 100, instant: true },
+    { text: '********', cls: 'v', delay: 0 },
+    { text: '\n', delay: 200 },
+    { text: '  vault created\n\n', cls: 'v', delay: 100, instant: true },
     { text: '$ ', cls: 'p', delay: 200 },
     { text: 'kv set', cls: 'c', delay: 0 },
     { text: ' ', cls: '', delay: 0 },
     { text: 'OPENAI_API_KEY', cls: 'k', delay: 0 },
     { text: '\n', delay: 200 },
-    { text: '  OPENAI_API_KEY saved (dev) [encrypted]\n\n', cls: 'o', delay: 100, instant: true },
+    { text: '  Value: ', cls: 'o', delay: 100, instant: true },
+    { text: '********', cls: 'v', delay: 0 },
+    { text: '\n', delay: 100 },
+    { text: '  OPENAI_API_KEY saved [encrypted]\n\n', cls: 'v', delay: 100, instant: true },
     { text: '$ ', cls: 'p', delay: 200 },
     { text: 'kv unlock', cls: 'c', delay: 0 },
     { text: '\n', delay: 200 },
-    { text: '  vault unlocked (PID 1234)\n', cls: 'v', delay: 100, instant: true },
-    { text: '  Your AI agent can now use kv_api.\n', cls: 'o', delay: 50, instant: true },
-    { text: '  The key never leaves the daemon.', cls: 'o', delay: 0, instant: true },
+    { text: '  Passphrase: ', cls: 'o', delay: 100, instant: true },
+    { text: '********', cls: 'v', delay: 0 },
+    { text: '\n', delay: 200 },
+    { text: '  vault unlocked\n\n', cls: 'v', delay: 100, instant: true },
+    { text: '  AI agent can now make API calls.\n', cls: 'o', delay: 50, instant: true },
+    { text: '  Your keys never leave this process.', cls: 'o', delay: 0, instant: true },
   ];
 
   const out = document.getElementById('typed-output');
