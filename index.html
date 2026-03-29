@@ -18,6 +18,9 @@
 {"@context":"https://schema.org","@type":"SoftwareApplication","name":"kv","description":"Encrypted secrets management for developers and AI agents. ChaCha20-Poly1305 encryption with MCP integration.","url":"https://kvsecure.com","applicationCategory":"DeveloperApplication","operatingSystem":"Windows, macOS, Linux","offers":{"@type":"Offer","price":"0","priceCurrency":"USD"},"author":{"@type":"Organization","name":"kvsecure"}}
 </script>
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>&#x1F510;</text></svg>">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;600;700&family=IBM+Plex+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <style>
 /* ── Variables ─────────────────────────────────────────── */
 :root {
@@ -33,8 +36,8 @@
   --yellow:      #fbbf24;
   --red:         #f87171;
   --border:      #27272a;
-  --font:        -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-  --mono:        "SF Mono", "Cascadia Code", "JetBrains Mono", "Fira Code", Consolas, monospace;
+  --font:        "IBM Plex Sans", -apple-system, BlinkMacSystemFont, sans-serif;
+  --mono:        "IBM Plex Mono", "SF Mono", "Cascadia Code", Consolas, monospace;
 }
 
 /* ── Reset / Base ──────────────────────────────────────── */
@@ -46,6 +49,16 @@ body {
   color: var(--text);
   line-height: 1.6;
   -webkit-font-smoothing: antialiased;
+}
+body::before {
+  content: "";
+  position: fixed; top: 0; left: 0; right: 0; bottom: 0;
+  background-image:
+    linear-gradient(rgba(34,211,238,0.025) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(34,211,238,0.025) 1px, transparent 1px);
+  background-size: 40px 40px;
+  pointer-events: none;
+  z-index: -1;
 }
 a { color: var(--accent); text-decoration: none; }
 a:hover { text-decoration: underline; }
@@ -102,7 +115,7 @@ nav {
 }
 .hero-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 60px; align-items: center; position: relative; }
 .hero h1 { font-size: 3rem; line-height: 1.15; font-weight: 800; letter-spacing: -0.02em; margin-bottom: 20px; }
-.hero h1 span { color: var(--accent); }
+.hero h1 span { color: var(--accent); text-shadow: 0 0 40px rgba(34,211,238,0.3), 0 0 80px rgba(34,211,238,0.1); }
 .hero .sub { font-size: 1.15rem; color: var(--text-muted); line-height: 1.7; margin-bottom: 32px; max-width: 480px; }
 .hero-ctas { display: flex; gap: 14px; flex-wrap: wrap; }
 .btn-primary {
@@ -171,7 +184,7 @@ nav {
 .terminal .r  { color: var(--red); }
 
 /* Hero terminal typing cursor */
-#hero-terminal pre { min-height: 220px; }
+#hero-terminal pre { min-height: 140px; }
 .cursor-blink {
   display: inline-block; width: 8px; height: 16px;
   background: var(--accent); vertical-align: text-bottom;
@@ -224,9 +237,22 @@ nav {
 .features-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; }
 .feature-card {
   background: var(--bg-card); border: 1px solid var(--border); border-radius: 10px;
-  padding: 28px; transition: border-color 0.2s, transform 0.2s;
+  padding: 28px; transition: transform 0.2s;
+  position: relative; overflow: hidden;
 }
-.feature-card:hover { border-color: var(--accent); }
+.feature-card::before {
+  content: "";
+  position: absolute; inset: 0;
+  border-radius: 10px;
+  padding: 1px;
+  background: linear-gradient(135deg, transparent, var(--accent), transparent);
+  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  opacity: 0;
+  transition: opacity 0.3s;
+}
+.feature-card:hover::before { opacity: 1; }
 .feature-icon { font-size: 1.8rem; margin-bottom: 14px; }
 .feature-card h3 { font-size: 1.1rem; margin-bottom: 8px; font-weight: 600; }
 .feature-card p { font-size: 0.9rem; color: var(--text-muted); line-height: 1.6; }
@@ -249,6 +275,31 @@ nav {
 .comparison-table td:nth-child(2) { color: var(--green); font-weight: 600; }
 .comparison-table tr:last-child td { border-bottom: none; }
 .comparison-table thead th:nth-child(2) { color: var(--accent); }
+
+/* ── Security Proof ───────────────────────────────────── */
+.security-proof { text-align: center; }
+.security-proof h2 { font-size: 2rem; margin-bottom: 48px; font-weight: 700; }
+.proof-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 32px; max-width: 700px; margin: 0 auto 32px; }
+.proof-stat { padding: 24px; }
+.stat-number {
+  font-size: 4rem; font-weight: 800; font-family: var(--mono);
+  background: linear-gradient(135deg, var(--accent), var(--green));
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+  background-clip: text; line-height: 1;
+}
+.stat-label { font-size: 0.9rem; color: var(--text-muted); margin-top: 8px; }
+.proof-caption { font-size: 0.9rem; color: var(--text-muted); max-width: 500px; margin: 0 auto; }
+.proof-caption a { color: var(--accent); }
+
+/* ── Trust Badges (text-based) ───────────────────────── */
+.trust-badge {
+  display: inline-block; padding: 4px 12px; border-radius: 4px;
+  font-size: 0.75rem; font-family: var(--mono); font-weight: 600;
+  border: 1px solid var(--border);
+}
+.trust-badge--green { color: var(--green); border-color: rgba(74,222,128,0.3); }
+.trust-badge--blue { color: var(--accent); border-color: rgba(34,211,238,0.3); }
+.trust-badge--gray { color: var(--text-muted); }
 
 /* ── Pricing ───────────────────────────────────────────── */
 .pricing h2 { font-size: 2rem; text-align: center; margin-bottom: 12px; font-weight: 700; }
@@ -499,41 +550,41 @@ footer {
 <!-- ── Features ────────────────────────────────────────── -->
 <section class="features reveal" id="features">
   <div class="container">
-    <h2>Built for developers who vibe with AI</h2>
+    <h2>Defense in depth for AI-powered development</h2>
     <div class="features-grid">
 
       <div class="feature-card">
-        <div class="feature-icon">&#x1F510;</div>
+        <div class="feature-icon"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0110 0v4"/></svg></div>
         <h3>Agent proxy (kv_api)</h3>
         <p>Your AI agent makes API calls through the kv agent. The key never leaves. Like ssh-agent for API credentials. Built-in support for OpenAI, Anthropic, Google, GitHub + custom providers.</p>
       </div>
 
       <div class="feature-card">
-        <div class="feature-icon">&#x1F6E1;</div>
+        <div class="feature-icon"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg></div>
         <h3>Tamper-evident audit log</h3>
         <p>Every API call logged with hash-chain integrity. <code>kv audit --verify</code> proves your logs weren't modified. No competitor has this.</p>
       </div>
 
       <div class="feature-card">
-        <div class="feature-icon">&#x1F511;</div>
+        <div class="feature-icon"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 2l-2 2m-7.61 7.61a5.5 5.5 0 1 1-7.78 7.78 5.5 5.5 0 0 1 7.78-7.78zm0 0L15.5 7.5m0 0l3 3L22 7l-3-3m-3.5 3.5L19 4"/></svg></div>
         <h3>Passphrase + 2FA</h3>
         <p>Interface barrier that AI agents can't bypass. Interactive passphrase prompt + optional TOTP. Without it, the vault stays locked.</p>
       </div>
 
       <div class="feature-card">
-        <div class="feature-icon">&#x1F4BE;</div>
+        <div class="feature-icon"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="20" height="20" rx="2"/><path d="M6 6h.01M6 10h.01M6 14h.01M10 6h8M10 10h8M10 14h8"/></svg></div>
         <h3>Subprocess sandbox (kv_run)</h3>
-        <p>For databases, cloud SDKs, and legacy apps that need env vars. Command validation, network isolation, output redaction, file scanning.</p>
+        <p>For databases, cloud SDKs, and legacy apps that need env vars. Read-only filesystem sandbox (bwrap), PID namespace isolation, network isolation, output redaction, file scanning.</p>
       </div>
 
       <div class="feature-card">
-        <div class="feature-icon">&#x1F30D;</div>
+        <div class="feature-icon"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg></div>
         <h3>Client-agnostic</h3>
         <p>Works with Claude Code, Cursor, VS Code &mdash; any MCP client. Passphrase protection ensures same security regardless of editor.</p>
       </div>
 
       <div class="feature-card">
-        <div class="feature-icon">&#x1F6AB;</div>
+        <div class="feature-icon"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="4.93" y1="4.93" x2="19.07" y2="19.07"/></svg></div>
         <h3>SSRF protection</h3>
         <p>Custom providers validated against private IPs and non-HTTPS. DNS rebinding defense. Built-in providers are trusted. Your keys can't be redirected.</p>
       </div>
@@ -594,6 +645,13 @@ footer {
             <td>No</td>
           </tr>
           <tr>
+            <td>Filesystem sandbox</td>
+            <td>bwrap</td>
+            <td>No</td>
+            <td>No</td>
+            <td>No</td>
+          </tr>
+          <tr>
             <td>Free &amp; open source</td>
             <td>Yes</td>
             <td>Yes</td>
@@ -603,6 +661,28 @@ footer {
         </tbody>
       </table>
     </div>
+  </div>
+</section>
+
+<!-- ── Security Proof ──────────────────────────────────── -->
+<section class="security-proof reveal">
+  <div class="container">
+    <h2>Battle-tested security</h2>
+    <div class="proof-grid">
+      <div class="proof-stat">
+        <div class="stat-number">17</div>
+        <div class="stat-label">attack vectors tested</div>
+      </div>
+      <div class="proof-stat">
+        <div class="stat-number">0</div>
+        <div class="stat-label">secrets leaked</div>
+      </div>
+      <div class="proof-stat">
+        <div class="stat-number">6</div>
+        <div class="stat-label">defense layers</div>
+      </div>
+    </div>
+    <p class="proof-caption">Adversarial testing by the AI agent itself &mdash; with full Bash access and direct daemon connection. <a href="https://github.com/SatishoBananamoto/kv-secrets/blob/main/docs/adversarial-testing.md">Read the full report.</a></p>
   </div>
 </section>
 
@@ -619,6 +699,7 @@ footer {
         <div class="price-period">forever</div>
         <ul class="price-features">
           <li>Agent proxy for API calls (kv_api)</li>
+          <li>Filesystem sandbox (bwrap)</li>
           <li>Tamper-evident audit logging</li>
           <li>ChaCha20-Poly1305 encryption</li>
           <li>Dynamic provider registry</li>
@@ -659,10 +740,10 @@ footer {
 <section class="trust-strip reveal">
   <div class="container">
     <div class="trust-badges">
-      <a href="https://github.com/SatishoBananamoto/kv-secrets/actions/workflows/test.yml"><img src="https://github.com/SatishoBananamoto/kv-secrets/actions/workflows/test.yml/badge.svg" alt="CI tests passing"></a>
-      <a href="https://pypi.org/project/kv-secrets/"><img src="https://img.shields.io/pypi/v/kv-secrets" alt="PyPI version"></a>
-      <img src="https://img.shields.io/pypi/pyversions/kv-secrets" alt="Python 3.10+">
-      <a href="https://github.com/SatishoBananamoto/kv-secrets/blob/main/LICENSE"><img src="https://img.shields.io/github/license/SatishoBananamoto/kv-secrets" alt="MIT license"></a>
+      <span class="trust-badge trust-badge--green">195 tests passing</span>
+      <a href="https://pypi.org/project/kv-secrets/" style="text-decoration:none"><span class="trust-badge trust-badge--blue">v0.2.1</span></a>
+      <span class="trust-badge trust-badge--blue">Python 3.10+</span>
+      <a href="https://github.com/SatishoBananamoto/kv-secrets/blob/main/LICENSE" style="text-decoration:none"><span class="trust-badge trust-badge--gray">MIT License</span></a>
     </div>
     <p class="trust-text">Open source (MIT) &middot; ChaCha20-Poly1305 encryption &middot; <a href="https://github.com/SatishoBananamoto/kv-secrets/blob/main/SECURITY.md">Security policy</a></p>
   </div>
