@@ -92,11 +92,20 @@
             <strong>API response</strong>
             <small>The work succeeds, but the key travelled.</small>
           </article>
-          <div class="flow-ribbon leak-ribbon one">raw key copied</div>
-          <div class="flow-ribbon leak-ribbon two">secret in process</div>
-          <div class="flow-ribbon result-ribbon three">result returns</div>
-          <div class="moving-token leak-token">KEY</div>
-          <div class="moving-token result-token">OK</div>
+        </div>
+        <div class="flow-lanes" aria-label="Normal credential movement">
+          <div class="lane danger-lane">
+            <span>raw key copied</span>
+            <div class="lane-track"><i>KEY</i></div>
+          </div>
+          <div class="lane danger-lane">
+            <span>secret in process</span>
+            <div class="lane-track"><i>ENV</i></div>
+          </div>
+          <div class="lane result-lane">
+            <span>result returns</span>
+            <div class="lane-track"><i>OK</i></div>
+          </div>
         </div>
         <div class="boundary-note danger-note">
           <strong>Weak boundary:</strong> the raw secret becomes available to the agent path or subprocess path.
@@ -148,13 +157,20 @@
             <strong>useful result</strong>
             <small>Response body, query rows, command output.</small>
           </article>
-          <div class="flow-ribbon request-ribbon one">request</div>
-          <div class="flow-ribbon broker-ribbon two">credentialed call</div>
-          <div class="flow-ribbon result-ribbon three">result only</div>
-          <div class="flow-ribbon blocked-ribbon">raw key blocked</div>
-          <div class="moving-token request-token">REQ</div>
-          <div class="moving-token broker-token">AUTH</div>
-          <div class="moving-token safe-result-token">OK</div>
+        </div>
+        <div class="flow-lanes" aria-label="kv brokered credential movement">
+          <div class="lane request-lane">
+            <span>agent request</span>
+            <div class="lane-track"><i>REQ</i></div>
+          </div>
+          <div class="lane broker-lane">
+            <span>credentialed provider call</span>
+            <div class="lane-track"><i>AUTH</i></div>
+          </div>
+          <div class="lane result-lane">
+            <span>result only</span>
+            <div class="lane-track"><i>OK</i></div>
+          </div>
         </div>
         <div class="boundary-note good-note">
           <strong>Better boundary:</strong> the agent gets the result. The raw secret remains inside the kv-controlled path.
