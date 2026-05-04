@@ -45,20 +45,6 @@
 })();
 
 (function () {
-  var steps = Array.prototype.slice.call(document.querySelectorAll("[data-kv-step]"));
-  if (!steps.length || window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
-
-  var index = 0;
-  window.setInterval(function () {
-    steps.forEach(function (step) {
-      step.classList.remove("is-active");
-    });
-    steps[index % steps.length].classList.add("is-active");
-    index += 1;
-  }, 1500);
-})();
-
-(function () {
   var buttons = Array.prototype.slice.call(document.querySelectorAll("[data-copy]"));
   buttons.forEach(function (button) {
     button.addEventListener("click", function () {

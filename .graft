@@ -10,6 +10,7 @@ The static kvsecure.com site was rewritten into a trust-first launch surface:
 - `guide.html`, `faq.html`, and `feedback.html` were refreshed to remove stale launch claims and match the homepage story.
 - The hero demo now has a manual switch for `Normal path` and `With kv`, showing both the weak raw-key path and the kv-internal broker path.
 - The hero demo animation was changed from absolute overlay ribbons/tokens to contained lane tracks so moving labels cannot overlap cards or boundary notes.
+- The hero demo animation was reworked again from an image-generated concept into a broker-chamber visual with contained beams, a central kv boundary, and separate normal/kv states.
 
 ## Product Story To Preserve
 
@@ -38,6 +39,7 @@ Avoid these claims:
 - `/home/satishocoin/kv-secrets/scripts/exit_gate.sh /home/satishocoin/kvsecure.com`
 - After the hero demo rework: `node --check site.js`, Python HTML parser, local link check, stale-claim search, non-ASCII scan, `git diff --check`, and local HTTP asset checks for `/`, `styles.css`, and `site.js`.
 - After fixing animation overlap: screenshot-style renders were generated for desktop `With kv` and `Normal path` modes at `/tmp/kvsecure-kv-current.png` and `/tmp/kvsecure-normal-current.png`.
+- After the broker-chamber rework: generated concept image at `/home/satishocoin/.codex/generated_images/019dada6-8635-7292-9e83-a7139de88e6d/ig_0a877fc0f555025f0169f912a0fae4819194d563df602d8bbf.png`; screenshot-style renders at `/tmp/kvsecure-kv-stage-beams.png` and `/tmp/kvsecure-normal-stage-beams2.png`.
 
 ## Open Next Step
 

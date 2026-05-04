@@ -71,41 +71,42 @@
       </div>
 
       <div class="scenario-panel normal-panel" data-scenario="normal" aria-label="Normal path where a raw secret reaches the agent or subprocess">
-        <div class="scenario-grid">
-          <article class="actor-card agent-card">
+        <div class="credential-stage unsafe-stage" aria-label="Normal path visual: raw credential crosses through the work path">
+          <svg class="stage-lines" viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true">
+            <path class="stage-path danger-path danger-a" d="M18 30 C29 30 36 30 44 30" stroke="#ff6b5f" stroke-width="3" stroke-dasharray="10 14" fill="none" stroke-linecap="round"></path>
+            <path class="stage-path danger-path danger-b" d="M50 39 C52 48 52 56 52 66" stroke="#ff6b5f" stroke-width="3" stroke-dasharray="10 14" fill="none" stroke-linecap="round"></path>
+            <path class="stage-path danger-path danger-c" d="M59 72 C68 72 76 72 84 72" stroke="#ff6b5f" stroke-width="3" stroke-dasharray="10 14" fill="none" stroke-linecap="round"></path>
+            <path class="stage-path unsafe-return" d="M84 78 C64 88 39 88 18 78" stroke="#78e2c8" stroke-width="3" stroke-dasharray="10 14" fill="none" stroke-linecap="round"></path>
+          </svg>
+          <span class="beam danger-beam beam-agent-secret" aria-hidden="true"></span>
+          <span class="beam danger-beam beam-secret-process" aria-hidden="true"></span>
+          <span class="beam danger-beam beam-process-provider" aria-hidden="true"></span>
+          <span class="beam result-beam beam-provider-result" aria-hidden="true"></span>
+          <article class="stage-node stage-agent">
             <span>AI agent</span>
             <strong>reads, runs, retries</strong>
             <small>Powerful, but not a vault boundary.</small>
           </article>
-          <article class="actor-card secret-card danger-card">
+          <article class="stage-node stage-secret danger-node">
             <span>Plain secret</span>
             <strong>sk_live_****</strong>
             <small>.env, chat paste, log, or script input.</small>
           </article>
-          <article class="actor-card process-card danger-card">
+          <article class="stage-node stage-process danger-node">
             <span>Process</span>
             <strong>env / stdout / files</strong>
             <small>The raw value can spread after handoff.</small>
           </article>
-          <article class="actor-card provider-card">
+          <article class="stage-node stage-provider">
             <span>Provider</span>
             <strong>API response</strong>
             <small>The work succeeds, but the key travelled.</small>
           </article>
-        </div>
-        <div class="flow-lanes" aria-label="Normal credential movement">
-          <div class="lane danger-lane">
-            <span>raw key copied</span>
-            <div class="lane-track"><i>KEY</i></div>
-          </div>
-          <div class="lane danger-lane">
-            <span>secret in process</span>
-            <div class="lane-track"><i>ENV</i></div>
-          </div>
-          <div class="lane result-lane">
-            <span>result returns</span>
-            <div class="lane-track"><i>OK</i></div>
-          </div>
+          <article class="stage-node stage-result">
+            <span>Agent sees</span>
+            <strong>raw path residue</strong>
+            <small>Output, logs, files, and retries can carry traces.</small>
+          </article>
         </div>
         <div class="boundary-note danger-note">
           <strong>Weak boundary:</strong> the raw secret becomes available to the agent path or subprocess path.
@@ -113,64 +114,44 @@
       </div>
 
       <div class="scenario-panel kv-panel" data-scenario="kv" aria-label="kv path where request and result cross while raw secret stays inside kv">
-        <div class="scenario-grid">
-          <article class="actor-card agent-card">
+        <div class="credential-stage kv-stage" aria-label="kv brokered path visual: only request and result cross the boundary">
+          <svg class="stage-lines" viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true">
+            <path class="stage-path ghost-path" d="M18 30 C31 30 34 58 42 64" stroke="#ff6b5f" stroke-width="3" stroke-dasharray="10 14" fill="none" stroke-linecap="round"></path>
+            <path class="stage-path request-path" d="M18 30 C30 30 35 42 43 47" stroke="#a8b8a7" stroke-width="3" stroke-dasharray="10 14" fill="none" stroke-linecap="round"></path>
+            <path class="stage-path call-path" d="M57 47 C66 38 75 30 84 30" stroke="#d6f576" stroke-width="3" stroke-dasharray="10 14" fill="none" stroke-linecap="round"></path>
+            <path class="stage-path result-path" d="M57 59 C67 74 75 78 84 78" stroke="#78e2c8" stroke-width="3" stroke-dasharray="10 14" fill="none" stroke-linecap="round"></path>
+          </svg>
+          <span class="beam ghost-beam" aria-hidden="true"></span>
+          <span class="beam request-beam" aria-hidden="true"></span>
+          <span class="beam call-beam" aria-hidden="true"></span>
+          <span class="beam safe-result-beam" aria-hidden="true"></span>
+          <article class="stage-node stage-agent">
             <span>AI agent</span>
             <strong>requests work</strong>
             <small>Can ask for a provider call, query, or SSH action.</small>
           </article>
-          <article class="kv-core-card">
-            <div class="kv-core-header">
-              <span>kv process</span>
+          <div class="kv-chamber" aria-label="kv broker chamber where raw secret stays sealed">
+            <div class="kv-shield" aria-hidden="true"></div>
+            <div class="core-shell">
+              <span>kv broker</span>
               <strong>raw key stays here</strong>
-            </div>
-            <div class="kv-core-steps">
-              <div class="kv-step is-active" data-kv-step>
-                <span>1</span>
-                <p>Vault unlocked by user</p>
-              </div>
-              <div class="kv-step" data-kv-step>
-                <span>2</span>
-                <p>Secret scope checked</p>
-              </div>
-              <div class="kv-step" data-kv-step>
-                <span>3</span>
-                <p>Credential added inside broker</p>
-              </div>
-              <div class="kv-step" data-kv-step>
-                <span>4</span>
-                <p>Result returned, usage recorded</p>
+              <div class="core-lock" aria-hidden="true"></div>
+              <div class="sealed-capsule">
+                <span>sealed key</span>
+                <code>sk_live_****</code>
               </div>
             </div>
-            <div class="sealed-secret">
-              <span>sealed secret</span>
-              <code>sk_live_****</code>
-            </div>
-          </article>
-          <article class="actor-card provider-card">
+          </div>
+          <article class="stage-node stage-provider">
             <span>Provider</span>
             <strong>API / DB / SSH</strong>
             <small>Receives the credentialed request from kv.</small>
           </article>
-          <article class="actor-card result-card">
+          <article class="stage-node stage-result">
             <span>Agent receives</span>
             <strong>useful result</strong>
             <small>Response body, query rows, command output.</small>
           </article>
-        </div>
-        <div class="flow-lanes" aria-label="kv brokered credential movement">
-          <div class="lane request-lane">
-            <span>agent request</span>
-            <div class="lane-track"><i>REQ</i></div>
-          </div>
-          <div class="lane broker-lane">
-            <span>credentialed provider call</span>
-            <div class="lane-track"><i>AUTH</i></div>
-          </div>
-          <div class="lane result-lane">
-            <span>result only</span>
-            <div class="lane-track"><i>OK</i></div>
-          </div>
         </div>
         <div class="boundary-note good-note">
           <strong>Better boundary:</strong> the agent gets the result. The raw secret remains inside the kv-controlled path.
