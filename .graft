@@ -8,6 +8,7 @@ The static kvsecure.com site was rewritten into a trust-first launch surface:
 - `styles.css` is the shared visual system for the site.
 - `site.js` handles mobile nav, FAQ accordion, copy button, reveal states, and the hero flow event loop.
 - `guide.html`, `faq.html`, and `feedback.html` were refreshed to remove stale launch claims and match the homepage story.
+- The hero demo now has a manual switch for `Normal path` and `With kv`, showing both the weak raw-key path and the kv-internal broker path.
 
 ## Product Story To Preserve
 
@@ -34,11 +35,13 @@ Avoid these claims:
 - stale-claim search for old version, fake pricing, old test count, "military-grade", and absolute never-see wording
 - `git diff --check`
 - `/home/satishocoin/kv-secrets/scripts/exit_gate.sh /home/satishocoin/kvsecure.com`
+- After the hero demo rework: `node --check site.js`, Python HTML parser, local link check, stale-claim search, non-ASCII scan, `git diff --check`, and local HTTP asset checks for `/`, `styles.css`, and `site.js`.
 
 ## Open Next Step
 
-Do a real browser visual review before pushing:
+Do a real browser visual review before or after pushing visual edits:
 
 1. Open the homepage on desktop and mobile widths.
-2. Check the hero flow animation, nav, copy button, FAQ accordion, and feedback form layout.
-3. If the visual pass is acceptable, commit and push the static site changes.
+2. Check both hero demo modes: `Normal path` and `With kv`.
+3. Check nav, copy button, FAQ accordion, and feedback form layout.
+4. If the visual pass is acceptable, commit and push the static site changes.

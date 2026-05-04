@@ -19,7 +19,33 @@
 })();
 
 (function () {
-  var steps = Array.prototype.slice.call(document.querySelectorAll("[data-flow-step]"));
+  var board = document.querySelector(".flow-board");
+  var buttons = Array.prototype.slice.call(document.querySelectorAll("[data-demo-button]"));
+  var caption = document.querySelector("[data-demo-caption]");
+  if (!board || !buttons.length) return;
+
+  var captions = {
+    normal: "normal mode: the raw key crosses into the agent or subprocess path",
+    kv: "kv mode: only request and result cross the boundary"
+  };
+
+  buttons.forEach(function (button) {
+    button.addEventListener("click", function () {
+      var mode = button.getAttribute("data-demo-button") || "kv";
+      board.setAttribute("data-demo-mode", mode);
+      buttons.forEach(function (candidate) {
+        candidate.classList.toggle("is-active", candidate === button);
+        candidate.setAttribute("aria-pressed", String(candidate === button));
+      });
+      if (caption) {
+        caption.textContent = captions[mode] || captions.kv;
+      }
+    });
+  });
+})();
+
+(function () {
+  var steps = Array.prototype.slice.call(document.querySelectorAll("[data-kv-step]"));
   if (!steps.length || window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
 
   var index = 0;

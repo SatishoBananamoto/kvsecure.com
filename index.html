@@ -60,77 +60,104 @@
       </div>
     </div>
 
-    <div class="flow-board" aria-label="Animated flow showing how kv brokers a credential request">
+    <div class="flow-board" data-demo-mode="kv" aria-label="Interactive demo comparing normal secret handling with kv brokered handling">
       <div class="flow-topline">
-        <span>credential boundary</span>
-        <strong>raw key stays inside kv</strong>
+        <span>credential boundary demo</span>
+        <strong data-demo-caption>kv mode: only request and result cross the boundary</strong>
       </div>
-      <div class="flow-stage">
-        <svg class="flow-lines" viewBox="0 0 720 360" role="img" aria-labelledby="flow-title flow-desc">
-          <title id="flow-title">kv brokered credential flow</title>
-          <desc id="flow-desc">The agent sends a request to kv. kv uses the credential with a provider. The provider response returns to the agent. The raw key path is blocked.</desc>
-          <defs>
-            <path id="path-agent-vault" d="M132 172 C 210 90, 300 90, 358 166" />
-            <path id="path-vault-provider" d="M374 193 C 470 280, 570 260, 616 190" />
-            <path id="path-provider-agent" d="M597 145 C 480 32, 250 32, 137 132" />
-          </defs>
-          <path class="flow-path muted" d="M132 172 C 210 90, 300 90, 358 166" />
-          <path class="flow-path hot" d="M374 193 C 470 280, 570 260, 616 190" />
-          <path class="flow-path return" d="M597 145 C 480 32, 250 32, 137 132" />
-          <path class="blocked-path" d="M136 210 C 260 305, 485 305, 610 214" />
-          <g class="blocked-label">
-            <rect x="303" y="284" width="122" height="34" rx="17" />
-            <text x="364" y="306" text-anchor="middle">raw key blocked</text>
-          </g>
-          <circle r="7" class="packet request">
-            <animateMotion dur="5.6s" repeatCount="indefinite" begin="0s">
-              <mpath href="#path-agent-vault" />
-            </animateMotion>
-          </circle>
-          <circle r="7" class="packet credential">
-            <animateMotion dur="5.6s" repeatCount="indefinite" begin="1.5s">
-              <mpath href="#path-vault-provider" />
-            </animateMotion>
-          </circle>
-          <circle r="7" class="packet result">
-            <animateMotion dur="5.6s" repeatCount="indefinite" begin="3.1s">
-              <mpath href="#path-provider-agent" />
-            </animateMotion>
-          </circle>
-        </svg>
+      <div class="demo-toggle" role="group" aria-label="Switch credential flow view">
+        <button type="button" data-demo-button="normal" aria-pressed="false">Normal path</button>
+        <button type="button" class="is-active" data-demo-button="kv" aria-pressed="true">With kv</button>
+      </div>
 
-        <div class="flow-node agent-node">
-          <span class="node-icon">A</span>
-          <strong>Agent</strong>
-          <small>asks for work</small>
+      <div class="scenario-panel normal-panel" data-scenario="normal" aria-label="Normal path where a raw secret reaches the agent or subprocess">
+        <div class="scenario-grid">
+          <article class="actor-card agent-card">
+            <span>AI agent</span>
+            <strong>reads, runs, retries</strong>
+            <small>Powerful, but not a vault boundary.</small>
+          </article>
+          <article class="actor-card secret-card danger-card">
+            <span>Plain secret</span>
+            <strong>sk_live_****</strong>
+            <small>.env, chat paste, log, or script input.</small>
+          </article>
+          <article class="actor-card process-card danger-card">
+            <span>Process</span>
+            <strong>env / stdout / files</strong>
+            <small>The raw value can spread after handoff.</small>
+          </article>
+          <article class="actor-card provider-card">
+            <span>Provider</span>
+            <strong>API response</strong>
+            <small>The work succeeds, but the key travelled.</small>
+          </article>
+          <div class="flow-ribbon leak-ribbon one">raw key copied</div>
+          <div class="flow-ribbon leak-ribbon two">secret in process</div>
+          <div class="flow-ribbon result-ribbon three">result returns</div>
+          <div class="moving-token leak-token">KEY</div>
+          <div class="moving-token result-token">OK</div>
         </div>
-        <div class="flow-node vault-node">
-          <span class="node-icon lock-icon">K</span>
-          <strong>kv daemon</strong>
-          <small>uses secret inside boundary</small>
-        </div>
-        <div class="flow-node provider-node">
-          <span class="node-icon">P</span>
-          <strong>Provider</strong>
-          <small>OpenAI, DB, SSH, API</small>
+        <div class="boundary-note danger-note">
+          <strong>Weak boundary:</strong> the raw secret becomes available to the agent path or subprocess path.
         </div>
       </div>
-      <div class="event-stack" data-flow-events>
-        <div class="event-row is-active" data-flow-step>
-          <span></span>
-          <p><strong>Agent:</strong> call OpenAI with this prompt</p>
+
+      <div class="scenario-panel kv-panel" data-scenario="kv" aria-label="kv path where request and result cross while raw secret stays inside kv">
+        <div class="scenario-grid">
+          <article class="actor-card agent-card">
+            <span>AI agent</span>
+            <strong>requests work</strong>
+            <small>Can ask for a provider call, query, or SSH action.</small>
+          </article>
+          <article class="kv-core-card">
+            <div class="kv-core-header">
+              <span>kv process</span>
+              <strong>raw key stays here</strong>
+            </div>
+            <div class="kv-core-steps">
+              <div class="kv-step is-active" data-kv-step>
+                <span>1</span>
+                <p>Vault unlocked by user</p>
+              </div>
+              <div class="kv-step" data-kv-step>
+                <span>2</span>
+                <p>Secret scope checked</p>
+              </div>
+              <div class="kv-step" data-kv-step>
+                <span>3</span>
+                <p>Credential added inside broker</p>
+              </div>
+              <div class="kv-step" data-kv-step>
+                <span>4</span>
+                <p>Result returned, usage recorded</p>
+              </div>
+            </div>
+            <div class="sealed-secret">
+              <span>sealed secret</span>
+              <code>sk_live_****</code>
+            </div>
+          </article>
+          <article class="actor-card provider-card">
+            <span>Provider</span>
+            <strong>API / DB / SSH</strong>
+            <small>Receives the credentialed request from kv.</small>
+          </article>
+          <article class="actor-card result-card">
+            <span>Agent receives</span>
+            <strong>useful result</strong>
+            <small>Response body, query rows, command output.</small>
+          </article>
+          <div class="flow-ribbon request-ribbon one">request</div>
+          <div class="flow-ribbon broker-ribbon two">credentialed call</div>
+          <div class="flow-ribbon result-ribbon three">result only</div>
+          <div class="flow-ribbon blocked-ribbon">raw key blocked</div>
+          <div class="moving-token request-token">REQ</div>
+          <div class="moving-token broker-token">AUTH</div>
+          <div class="moving-token safe-result-token">OK</div>
         </div>
-        <div class="event-row" data-flow-step>
-          <span></span>
-          <p><strong>kv:</strong> add auth header inside daemon</p>
-        </div>
-        <div class="event-row" data-flow-step>
-          <span></span>
-          <p><strong>Provider:</strong> return response body</p>
-        </div>
-        <div class="event-row" data-flow-step>
-          <span></span>
-          <p><strong>Agent receives:</strong> result, not raw key</p>
+        <div class="boundary-note good-note">
+          <strong>Better boundary:</strong> the agent gets the result. The raw secret remains inside the kv-controlled path.
         </div>
       </div>
     </div>
@@ -275,8 +302,8 @@ kv setup claude-code</code></pre>
 
   <section class="section proof reveal" id="proof">
     <div class="proof-copy">
-      <h2>Built for launch trust.</h2>
-      <p>The website should be as honest as the product: local first, open source, security docs available, brokered tools preferred, and team features described only as future work until they exist.</p>
+      <h2>Trust should be inspectable.</h2>
+      <p>kv keeps its public claims narrow: local first, open source, documented boundaries, brokered tools preferred, and team features marked as future work until production evidence exists.</p>
     </div>
     <div class="proof-list">
       <a href="https://github.com/SatishoBananamoto/kv-secrets">Source on GitHub</a>
