@@ -3,947 +3,314 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>kv — Encrypted Secrets Management for Developers & AI Agents</title>
-<meta name="description" content="Stop pasting API keys into AI chat. kv encrypts secrets locally with ChaCha20-Poly1305 and lets your AI editor use them safely through MCP.">
-<meta name="theme-color" content="#0a0a0f">
-<meta property="og:title" content="kv — Encrypted Secrets for Developers & AI Agents">
-<meta property="og:description" content="ChaCha20-Poly1305 encryption. MCP integration. Your AI agent never sees your secrets.">
+<title>kvsecure - Local vault for AI agent credentials</title>
+<meta name="description" content="kv stores secrets in a local encrypted vault and gives AI agents brokered ways to use credentials without receiving the raw values by default.">
+<meta name="theme-color" content="#07110f">
+<meta property="og:title" content="kvsecure - Local vault for AI agent credentials">
+<meta property="og:description" content="Let AI agents use credentials through brokered tools without handing them the raw keys by default.">
 <meta property="og:type" content="website">
 <meta property="og:url" content="https://kvsecure.com">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="kv — Encrypted Secrets for Developers & AI Agents">
-<meta name="twitter:description" content="ChaCha20-Poly1305 encryption. MCP integration. Your AI agent never sees your secrets.">
+<meta name="twitter:title" content="kvsecure - Local vault for AI agent credentials">
+<meta name="twitter:description" content="A local encrypted vault and brokered credential boundary for AI-assisted development.">
 <link rel="canonical" href="https://kvsecure.com/">
-<script type="application/ld+json">
-{"@context":"https://schema.org","@type":"SoftwareApplication","name":"kv","description":"Encrypted secrets management for developers and AI agents. ChaCha20-Poly1305 encryption with MCP integration.","url":"https://kvsecure.com","applicationCategory":"DeveloperApplication","operatingSystem":"Windows, macOS, Linux","offers":{"@type":"Offer","price":"0","priceCurrency":"USD"},"author":{"@type":"Organization","name":"kvsecure"}}
-</script>
-<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>&#x1F510;</text></svg>">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;600;700&family=IBM+Plex+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-<style>
-/* ── Variables ─────────────────────────────────────────── */
-:root {
-  --bg:          #0a0a0f;
-  --bg-card:     #12121a;
-  --bg-terminal: #0d1117;
-  --bg-terminal-bar: #161b22;
-  --text:        #e4e4e7;
-  --text-muted:  #71717a;
-  --accent:      #22d3ee;
-  --accent-dim:  rgba(34,211,238,0.12);
-  --green:       #4ade80;
-  --yellow:      #fbbf24;
-  --red:         #f87171;
-  --border:      #27272a;
-  --font:        "IBM Plex Sans", -apple-system, BlinkMacSystemFont, sans-serif;
-  --mono:        "IBM Plex Mono", "SF Mono", "Cascadia Code", Consolas, monospace;
-}
-
-/* ── Reset / Base ──────────────────────────────────────── */
-*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-html { scroll-behavior: smooth; }
-body {
-  font-family: var(--font);
-  background: var(--bg);
-  color: var(--text);
-  line-height: 1.6;
-  -webkit-font-smoothing: antialiased;
-}
-body::before {
-  content: "";
-  position: fixed; top: 0; left: 0; right: 0; bottom: 0;
-  background-image:
-    linear-gradient(rgba(34,211,238,0.025) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(34,211,238,0.025) 1px, transparent 1px);
-  background-size: 40px 40px;
-  pointer-events: none;
-  z-index: -1;
-}
-a { color: var(--accent); text-decoration: none; }
-a:hover { text-decoration: underline; }
-
-/* ── Layout ────────────────────────────────────────────── */
-.container { max-width: 1120px; margin: 0 auto; padding: 0 24px; }
-section { padding: 80px 0; }
-
-/* ── Skip link + Focus ────────────────────────────────── */
-.skip-link {
-  position: absolute; top: -100px; left: 16px;
-  background: var(--accent); color: #000; padding: 8px 16px;
-  border-radius: 4px; font-weight: 600; font-size: 0.9rem; z-index: 200;
-}
-.skip-link:focus { top: 8px; }
-:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
-
-/* ── Nav ───────────────────────────────────────────────── */
-nav {
-  position: fixed; top: 0; left: 0; right: 0; z-index: 100;
-  background: rgba(10,10,15,0.85);
-  backdrop-filter: blur(12px);
-  border-bottom: 1px solid var(--border);
-}
-.nav-inner {
-  max-width: 1120px; margin: 0 auto; padding: 0 24px;
-  display: flex; align-items: center; justify-content: space-between;
-  height: 60px;
-}
-.nav-logo { font-size: 1.5rem; font-weight: 700; color: var(--accent); font-family: var(--mono); }
-.nav-links { display: flex; gap: 28px; align-items: center; }
-.nav-links a { color: var(--text-muted); font-size: 0.9rem; }
-.nav-links a:hover { color: var(--text); text-decoration: none; }
-.nav-gh {
-  display: inline-flex; align-items: center; gap: 6px;
-  padding: 6px 14px; border: 1px solid var(--border); border-radius: 6px;
-  font-size: 0.85rem; color: var(--text);
-}
-.nav-gh:hover { border-color: var(--text-muted); text-decoration: none; }
-.nav-toggle { display: none; background: none; border: none; color: var(--text); font-size: 1.5rem; cursor: pointer; }
-
-/* ── Hero ──────────────────────────────────────────────── */
-.hero {
-  padding-top: 140px; padding-bottom: 80px;
-  position: relative; overflow: hidden;
-}
-.hero::before {
-  content: "";
-  position: absolute;
-  top: -120px; left: 50%; transform: translateX(-50%);
-  width: 800px; height: 600px;
-  background: radial-gradient(ellipse, rgba(34,211,238,0.08) 0%, transparent 70%);
-  pointer-events: none;
-}
-.hero-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 60px; align-items: center; position: relative; }
-.hero h1 { font-size: 3rem; line-height: 1.15; font-weight: 800; letter-spacing: -0.02em; margin-bottom: 20px; }
-.hero h1 span { color: var(--accent); text-shadow: 0 0 40px rgba(34,211,238,0.3), 0 0 80px rgba(34,211,238,0.1); }
-.hero .sub { font-size: 1.15rem; color: var(--text-muted); line-height: 1.7; margin-bottom: 32px; max-width: 480px; }
-.hero-ctas { display: flex; gap: 14px; flex-wrap: wrap; }
-.btn-primary {
-  display: inline-flex; align-items: center; gap: 8px;
-  padding: 12px 28px; background: var(--accent); color: #000; font-weight: 600;
-  border-radius: 8px; font-size: 0.95rem; transition: opacity 0.15s;
-}
-.btn-primary:hover { opacity: 0.85; text-decoration: none; }
-.btn-outline {
-  display: inline-flex; align-items: center; gap: 8px;
-  padding: 12px 28px; border: 1px solid var(--border); color: var(--text);
-  border-radius: 8px; font-size: 0.95rem; transition: border-color 0.15s;
-}
-.btn-outline:hover { border-color: var(--text-muted); text-decoration: none; }
-
-/* ── Works With ───────────────────────────────────────── */
-.works-with {
-  text-align: center; padding: 40px 0 60px;
-}
-.works-with p {
-  font-size: 0.85rem; color: var(--text-muted); text-transform: uppercase;
-  letter-spacing: 0.1em; margin-bottom: 20px;
-}
-.editor-badges {
-  display: flex; justify-content: center; gap: 32px; flex-wrap: wrap;
-}
-.editor-badge {
-  display: flex; align-items: center; gap: 10px;
-  padding: 10px 20px;
-  background: var(--bg-card); border: 1px solid var(--border); border-radius: 8px;
-  font-size: 0.9rem; color: var(--text); font-weight: 500;
-  transition: border-color 0.2s;
-}
-.editor-badge:hover { border-color: var(--accent); }
-.editor-badge svg { width: 20px; height: 20px; }
-
-/* ── Terminal ──────────────────────────────────────────── */
-.terminal {
-  background: var(--bg-terminal);
-  border: 1px solid var(--border);
-  border-radius: 10px;
-  overflow: hidden;
-  box-shadow: 0 8px 32px rgba(0,0,0,0.4);
-}
-.terminal-bar {
-  display: flex; align-items: center; gap: 7px;
-  padding: 12px 16px;
-  background: var(--bg-terminal-bar);
-  border-bottom: 1px solid var(--border);
-}
-.dot { width: 11px; height: 11px; border-radius: 50%; }
-.dot-r { background: #ff5f57; }
-.dot-y { background: #febc2e; }
-.dot-g { background: #28c840; }
-.terminal-bar span { margin-left: 8px; font-size: 0.75rem; color: var(--text-muted); font-family: var(--mono); }
-.terminal pre {
-  padding: 20px; margin: 0;
-  font-family: var(--mono); font-size: 0.85rem; line-height: 1.75;
-  overflow-x: auto; color: var(--text);
-}
-.terminal .p  { color: var(--text-muted); }
-.terminal .c  { color: var(--accent); }
-.terminal .v  { color: var(--green); }
-.terminal .k  { color: var(--yellow); }
-.terminal .o  { color: var(--text-muted); }
-.terminal .r  { color: var(--red); }
-
-/* Hero terminal typing cursor */
-#hero-terminal pre { min-height: 140px; }
-.cursor-blink {
-  display: inline-block; width: 8px; height: 16px;
-  background: var(--accent); vertical-align: text-bottom;
-  animation: blink 1s step-end infinite;
-}
-@keyframes blink { 50% { opacity: 0; } }
-
-/* ── Install ───────────────────────────────────────────── */
-.install { text-align: center; background: var(--bg-card); border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); }
-.install h2 { font-size: 2rem; margin-bottom: 32px; font-weight: 700; }
-.install-cmd {
-  display: inline-flex; align-items: center; gap: 16px;
-  background: var(--bg-terminal); border: 1px solid var(--border); border-radius: 8px;
-  padding: 16px 24px; font-family: var(--mono); font-size: 1.1rem;
-  margin-bottom: 40px;
-}
-.install-cmd code { color: var(--accent); }
-.copy-btn {
-  background: none; border: 1px solid var(--border); color: var(--text-muted);
-  padding: 4px 10px; border-radius: 4px; cursor: pointer; font-size: 0.8rem;
-  font-family: var(--font); transition: color 0.15s;
-}
-.copy-btn:hover { color: var(--text); border-color: var(--text-muted); }
-.quickstart { display: grid; grid-template-columns: repeat(4, 1fr); gap: 24px; max-width: 900px; margin: 0 auto; }
-.qs-step { text-align: center; }
-.qs-step .num { display: inline-flex; align-items: center; justify-content: center; width: 32px; height: 32px; border-radius: 50%; background: var(--accent-dim); color: var(--accent); font-weight: 700; font-size: 0.85rem; margin-bottom: 12px; }
-.qs-step code { display: block; font-family: var(--mono); font-size: 0.9rem; color: var(--accent); margin-bottom: 6px; }
-.qs-step p { font-size: 0.85rem; color: var(--text-muted); }
-
-/* ── The Problem ──────────────────────────────────────── */
-.the-problem h2 { font-size: 2rem; text-align: center; margin-bottom: 48px; font-weight: 700; }
-.problem-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; margin-bottom: 32px; }
-.problem-card {
-  background: var(--bg-card); border: 1px solid var(--border); border-radius: 10px;
-  padding: 28px; text-align: center;
-}
-.problem-card h3 { font-size: 1.1rem; margin-bottom: 10px; font-weight: 600; color: var(--red); }
-.problem-card p { font-size: 0.9rem; color: var(--text-muted); line-height: 1.6; }
-.problem-bottom { text-align: center; font-size: 1.05rem; color: var(--text-muted); }
-
-/* ── How kv Works ─────────────────────────────────────── */
-.how-kv-works { background: var(--bg-card); border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); }
-.how-kv-works h2 { font-size: 2rem; text-align: center; margin-bottom: 48px; font-weight: 700; }
-.how-kv-works .terminal { max-width: 700px; margin: 0 auto 24px; }
-.how-kv-works .terminal pre { font-size: 0.85rem; padding: 24px; line-height: 2; }
-.how-kv-caption { text-align: center; max-width: 680px; margin: 0 auto; font-size: 0.95rem; color: var(--text-muted); line-height: 1.7; }
-
-/* ── Features ──────────────────────────────────────────── */
-.features h2 { font-size: 2rem; text-align: center; margin-bottom: 48px; font-weight: 700; }
-.features-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; }
-.feature-card {
-  background: var(--bg-card); border: 1px solid var(--border); border-radius: 10px;
-  padding: 28px; transition: transform 0.2s;
-  position: relative; overflow: hidden;
-}
-.feature-card::before {
-  content: "";
-  position: absolute; inset: 0;
-  border-radius: 10px;
-  padding: 1px;
-  background: linear-gradient(135deg, transparent, var(--accent), transparent);
-  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
-  -webkit-mask-composite: xor;
-  mask-composite: exclude;
-  opacity: 0;
-  transition: opacity 0.3s;
-}
-.feature-card:hover::before { opacity: 1; }
-.feature-icon { font-size: 1.8rem; margin-bottom: 14px; }
-.feature-card h3 { font-size: 1.1rem; margin-bottom: 8px; font-weight: 600; }
-.feature-card p { font-size: 0.9rem; color: var(--text-muted); line-height: 1.6; }
-.coming { display: inline-block; font-size: 0.7rem; background: var(--accent-dim); color: var(--accent); padding: 2px 8px; border-radius: 4px; margin-left: 8px; vertical-align: middle; }
-
-/* ── Comparison ───────────────────────────────────────── */
-.comparison h2 { font-size: 2rem; text-align: center; margin-bottom: 48px; font-weight: 700; }
-.comparison-table-wrap { overflow-x: auto; }
-.comparison-table {
-  width: 100%; border-collapse: collapse; font-size: 0.9rem;
-  background: var(--bg-card); border: 1px solid var(--border); border-radius: 10px;
-  overflow: hidden;
-}
-.comparison-table th, .comparison-table td {
-  padding: 14px 18px; text-align: center; border-bottom: 1px solid var(--border);
-}
-.comparison-table th { font-weight: 600; color: var(--text); background: var(--bg-terminal-bar); }
-.comparison-table th:first-child, .comparison-table td:first-child { text-align: left; font-weight: 500; }
-.comparison-table td { color: var(--text-muted); }
-.comparison-table td:nth-child(2) { color: var(--green); font-weight: 600; }
-.comparison-table tr:last-child td { border-bottom: none; }
-.comparison-table thead th:nth-child(2) { color: var(--accent); }
-
-/* ── Security Proof ───────────────────────────────────── */
-.security-proof { text-align: center; }
-.security-proof h2 { font-size: 2rem; margin-bottom: 48px; font-weight: 700; }
-.proof-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 32px; max-width: 700px; margin: 0 auto 32px; }
-.proof-stat { padding: 24px; }
-.stat-number {
-  font-size: 4rem; font-weight: 800; font-family: var(--mono);
-  background: linear-gradient(135deg, var(--accent), var(--green));
-  -webkit-background-clip: text; -webkit-text-fill-color: transparent;
-  background-clip: text; line-height: 1;
-}
-.stat-label { font-size: 0.9rem; color: var(--text-muted); margin-top: 8px; }
-.proof-caption { font-size: 0.9rem; color: var(--text-muted); max-width: 500px; margin: 0 auto; }
-.proof-caption a { color: var(--accent); }
-
-/* ── Trust Badges (text-based) ───────────────────────── */
-.trust-badge {
-  display: inline-block; padding: 4px 12px; border-radius: 4px;
-  font-size: 0.75rem; font-family: var(--mono); font-weight: 600;
-  border: 1px solid var(--border);
-}
-.trust-badge--green { color: var(--green); border-color: rgba(74,222,128,0.3); }
-.trust-badge--blue { color: var(--accent); border-color: rgba(34,211,238,0.3); }
-.trust-badge--gray { color: var(--text-muted); }
-
-/* ── Pricing ───────────────────────────────────────────── */
-.pricing h2 { font-size: 2rem; text-align: center; margin-bottom: 12px; font-weight: 700; }
-.pricing .sub { text-align: center; color: var(--text-muted); margin-bottom: 48px; font-size: 1rem; }
-.pricing-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 24px; max-width: 720px; margin: 0 auto; }
-.price-card {
-  background: var(--bg-card); border: 1px solid var(--border); border-radius: 12px;
-  padding: 36px 28px; position: relative; transition: border-color 0.2s, transform 0.2s;
-}
-.price-card.featured { border-color: var(--accent); }
-.price-card .badge {
-  position: absolute; top: -12px; left: 50%; transform: translateX(-50%);
-  background: var(--accent); color: #000; font-size: 0.75rem; font-weight: 700;
-  padding: 4px 14px; border-radius: 20px;
-}
-.price-card h3 { font-size: 1.2rem; margin-bottom: 8px; }
-.price-amount { font-size: 2.5rem; font-weight: 800; margin-bottom: 4px; }
-.price-amount small { font-size: 0.9rem; font-weight: 400; color: var(--text-muted); }
-.price-period { font-size: 0.85rem; color: var(--text-muted); margin-bottom: 24px; }
-.price-features { list-style: none; margin-bottom: 28px; }
-.price-features li { padding: 6px 0; font-size: 0.9rem; color: var(--text-muted); }
-.price-features li::before { content: "\2713 "; color: var(--green); margin-right: 8px; }
-.price-cta { display: block; text-align: center; padding: 12px; border-radius: 8px; font-weight: 600; font-size: 0.95rem; }
-.price-cta-primary { background: var(--accent); color: #000; }
-.price-cta-primary:hover { opacity: 0.85; text-decoration: none; }
-.price-cta-soon {
-  background: var(--bg); border: 1px solid var(--border); color: var(--text-muted);
-  cursor: default;
-}
-
-/* ── Footer ────────────────────────────────────────────── */
-footer {
-  border-top: 1px solid var(--border);
-  padding: 40px 0;
-}
-.footer-inner { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 16px; }
-.footer-brand { font-family: var(--mono); font-weight: 700; color: var(--accent); font-size: 1.2rem; }
-.footer-links { display: flex; gap: 24px; }
-.footer-links a { color: var(--text-muted); font-size: 0.85rem; }
-.footer-links a:hover { color: var(--text); }
-.footer-tagline { width: 100%; text-align: center; color: var(--text-muted); font-size: 0.8rem; margin-top: 16px; }
-
-/* ── Trust Strip ───────────────────────────────────────── */
-.trust-strip { text-align: center; padding: 48px 0; }
-.trust-badges { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; margin-bottom: 16px; }
-.trust-badges img { height: 22px; }
-.trust-text { color: var(--text-muted); font-size: 0.85rem; }
-.trust-text a { color: var(--accent); }
-
-/* ── Waitlist ──────────────────────────────────────────── */
-.waitlist-form { display: flex; gap: 8px; margin-top: 16px; max-width: 360px; }
-.waitlist-form input { flex: 1; padding: 10px 14px; border: 1px solid var(--border); border-radius: 8px; background: var(--bg); color: var(--text); font-size: 0.85rem; font-family: var(--font); }
-.waitlist-form input:focus { outline: none; border-color: var(--accent); }
-.waitlist-form button { padding: 10px 20px; border: none; border-radius: 8px; background: var(--accent); color: #000; font-weight: 600; font-size: 0.85rem; cursor: pointer; white-space: nowrap; }
-.waitlist-form button:hover { opacity: 0.85; }
-.waitlist-msg { font-size: 0.8rem; color: var(--green); margin-top: 8px; display: none; }
-
-/* ── Scroll Reveal ─────────────────────────────────────── */
-.reveal {
-  opacity: 0; transform: translateY(30px);
-  transition: opacity 0.6s ease, transform 0.6s ease;
-}
-.reveal.visible {
-  opacity: 1; transform: translateY(0);
-}
-
-/* ── Responsive ────────────────────────────────────────── */
-@media (max-width: 1023px) {
-  .hero-grid { grid-template-columns: 1fr; gap: 40px; }
-  .features-grid { grid-template-columns: repeat(2, 1fr); }
-  .problem-grid { grid-template-columns: repeat(2, 1fr); }
-  .quickstart { grid-template-columns: repeat(2, 1fr); }
-}
-@media (max-width: 767px) {
-  .hero h1 { font-size: 2rem; }
-  .hero .sub { font-size: 1rem; }
-  section { padding: 56px 0; }
-  .features-grid { grid-template-columns: 1fr; }
-  .problem-grid { grid-template-columns: 1fr; }
-  .quickstart { grid-template-columns: 1fr; }
-  .pricing-grid { grid-template-columns: 1fr; }
-  .nav-links { display: none; position: absolute; top: 60px; left: 0; right: 0; background: var(--bg); border-bottom: 1px solid var(--border); flex-direction: column; padding: 20px 24px; gap: 16px; }
-  .nav-links.open { display: flex; }
-  .nav-toggle { display: block; }
-  .footer-inner { justify-content: center; text-align: center; }
-  .editor-badges { gap: 16px; }
-  .comparison-table { font-size: 0.8rem; }
-  .comparison-table th, .comparison-table td { padding: 10px 12px; }
-}
-
-/* ── Animations (respects reduced-motion) ──────────────── */
-@media (prefers-reduced-motion: no-preference) {
-  .feature-card:hover, .price-card:hover { transform: translateY(-2px); }
-}
-@media (prefers-reduced-motion: reduce) {
-  .reveal { opacity: 1; transform: none; transition: none; }
-  .cursor-blink { animation: none; }
-}
-</style>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600;700&family=Sora:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles.css">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%2307110f'/%3E%3Cpath d='M20 29v-7a12 12 0 0 1 24 0v7' fill='none' stroke='%23d6f576' stroke-width='5' stroke-linecap='round'/%3E%3Crect x='15' y='27' width='34' height='25' rx='7' fill='%23d6f576'/%3E%3Ccircle cx='32' cy='39' r='4' fill='%2307110f'/%3E%3C/svg%3E">
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"SoftwareApplication","name":"kv-secrets","description":"Local encrypted secrets management for developers and AI agents, with brokered API, query, SSH, and subprocess paths.","url":"https://kvsecure.com","applicationCategory":"DeveloperApplication","operatingSystem":"Windows, macOS, Linux","offers":{"@type":"Offer","price":"0","priceCurrency":"USD"}}
+</script>
 </head>
 <body>
-<a class="skip-link" href="#install">Skip to content</a>
+<a class="skip-link" href="#main">Skip to content</a>
 
-<!-- ── Nav ──────────────────────────────────────────────── -->
-<nav>
-  <div class="nav-inner">
-    <a href="/" class="nav-logo"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-3px;margin-right:4px"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0110 0v4"/></svg>kv</a>
-    <button class="nav-toggle" id="nav-toggle" aria-label="Menu" aria-expanded="false">&#9776;</button>
-    <div class="nav-links">
-      <a href="#install">Install</a>
-      <a href="#how-kv-works">How It Works</a>
-      <a href="#features">Features</a>
-      <a href="#pricing">Pricing</a>
-      <a href="https://github.com/SatishoBananamoto/kv-secrets" class="nav-gh">
-        <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/></svg>
-        GitHub
-      </a>
+<header class="site-header" data-nav>
+  <a class="brand" href="/" aria-label="kvsecure home">
+    <span class="brand-mark" aria-hidden="true">kv</span>
+    <span>kvsecure</span>
+  </a>
+  <button class="nav-toggle" type="button" aria-label="Open navigation" aria-expanded="false" data-nav-toggle>
+    <span></span><span></span><span></span>
+  </button>
+  <nav class="nav-links" data-nav-links>
+    <a href="#how">How it works</a>
+    <a href="#boundary">Security boundary</a>
+    <a href="guide.html">Guide</a>
+    <a href="faq.html">FAQ</a>
+    <a class="nav-cta" href="https://github.com/SatishoBananamoto/kv-secrets">GitHub</a>
+  </nav>
+</header>
+
+<main id="main">
+  <section class="hero section">
+    <div class="hero-copy">
+      <h1>Let agents use credentials without handing them the raw keys.</h1>
+      <p class="hero-sub">kv stores secrets in a local encrypted vault. Your agent asks kv to use a credential for a specific job. The safer brokered tools make the call and return the result, not the secret.</p>
+      <div class="hero-actions">
+        <a class="button primary" href="#start">Install kv</a>
+        <a class="button ghost" href="#how">See the flow</a>
+      </div>
+      <div class="assurance-grid" aria-label="Product assurances">
+        <span>Local encrypted vault</span>
+        <span>Passphrase unlock</span>
+        <span>Brokered API calls</span>
+        <span>Open source</span>
+      </div>
     </div>
-  </div>
-</nav>
 
-<main>
-<!-- ── Hero ─────────────────────────────────────────────── -->
-<section class="hero">
-  <div class="container">
-    <div class="hero-grid">
+    <div class="flow-board" aria-label="Animated flow showing how kv brokers a credential request">
+      <div class="flow-topline">
+        <span>credential boundary</span>
+        <strong>raw key stays inside kv</strong>
+      </div>
+      <div class="flow-stage">
+        <svg class="flow-lines" viewBox="0 0 720 360" role="img" aria-labelledby="flow-title flow-desc">
+          <title id="flow-title">kv brokered credential flow</title>
+          <desc id="flow-desc">The agent sends a request to kv. kv uses the credential with a provider. The provider response returns to the agent. The raw key path is blocked.</desc>
+          <defs>
+            <path id="path-agent-vault" d="M132 172 C 210 90, 300 90, 358 166" />
+            <path id="path-vault-provider" d="M374 193 C 470 280, 570 260, 616 190" />
+            <path id="path-provider-agent" d="M597 145 C 480 32, 250 32, 137 132" />
+          </defs>
+          <path class="flow-path muted" d="M132 172 C 210 90, 300 90, 358 166" />
+          <path class="flow-path hot" d="M374 193 C 470 280, 570 260, 616 190" />
+          <path class="flow-path return" d="M597 145 C 480 32, 250 32, 137 132" />
+          <path class="blocked-path" d="M136 210 C 260 305, 485 305, 610 214" />
+          <g class="blocked-label">
+            <rect x="303" y="284" width="122" height="34" rx="17" />
+            <text x="364" y="306" text-anchor="middle">raw key blocked</text>
+          </g>
+          <circle r="7" class="packet request">
+            <animateMotion dur="5.6s" repeatCount="indefinite" begin="0s">
+              <mpath href="#path-agent-vault" />
+            </animateMotion>
+          </circle>
+          <circle r="7" class="packet credential">
+            <animateMotion dur="5.6s" repeatCount="indefinite" begin="1.5s">
+              <mpath href="#path-vault-provider" />
+            </animateMotion>
+          </circle>
+          <circle r="7" class="packet result">
+            <animateMotion dur="5.6s" repeatCount="indefinite" begin="3.1s">
+              <mpath href="#path-provider-agent" />
+            </animateMotion>
+          </circle>
+        </svg>
+
+        <div class="flow-node agent-node">
+          <span class="node-icon">A</span>
+          <strong>Agent</strong>
+          <small>asks for work</small>
+        </div>
+        <div class="flow-node vault-node">
+          <span class="node-icon lock-icon">K</span>
+          <strong>kv daemon</strong>
+          <small>uses secret inside boundary</small>
+        </div>
+        <div class="flow-node provider-node">
+          <span class="node-icon">P</span>
+          <strong>Provider</strong>
+          <small>OpenAI, DB, SSH, API</small>
+        </div>
+      </div>
+      <div class="event-stack" data-flow-events>
+        <div class="event-row is-active" data-flow-step>
+          <span></span>
+          <p><strong>Agent:</strong> call OpenAI with this prompt</p>
+        </div>
+        <div class="event-row" data-flow-step>
+          <span></span>
+          <p><strong>kv:</strong> add auth header inside daemon</p>
+        </div>
+        <div class="event-row" data-flow-step>
+          <span></span>
+          <p><strong>Provider:</strong> return response body</p>
+        </div>
+        <div class="event-row" data-flow-step>
+          <span></span>
+          <p><strong>Agent receives:</strong> result, not raw key</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section narrow intro-line reveal">
+    <p>kv is for the exact moment where an AI coding agent needs to touch real infrastructure, but you do not want to paste keys into chat, context, logs, or random scripts.</p>
+  </section>
+
+  <section class="section split reveal" id="problem">
+    <div>
+      <h2>The old pattern is too loose for agentic work.</h2>
+      <p>Traditional developer secret handling assumes the developer is driving every command. AI-assisted work changes that. The agent can write code, run commands, inspect files, and retry. Secrets need a clearer boundary.</p>
+    </div>
+    <div class="risk-grid">
+      <article>
+        <span>.env</span>
+        <h3>Plain files get read.</h3>
+        <p>If an agent can inspect the project, plaintext secrets are just another file.</p>
+      </article>
+      <article>
+        <span>Chat</span>
+        <h3>Pasted keys become history.</h3>
+        <p>Once a key is in a conversation, you are now managing exposure, not access.</p>
+      </article>
+      <article>
+        <span>SDK</span>
+        <h3>Plaintext return values spread.</h3>
+        <p>If a tool returns the secret to the agent, it can leak into output, logs, or generated files.</p>
+      </article>
+    </div>
+  </section>
+
+  <section class="section how reveal" id="how">
+    <div class="section-heading">
+      <h2>The safer path is brokered use.</h2>
+      <p>The core idea is simple: the agent requests an action. kv performs the credentialed part inside the daemon. The agent receives the useful result.</p>
+    </div>
+    <div class="mode-grid">
+      <article class="mode-card preferred">
+        <div class="mode-number">01</div>
+        <h3>Brokered API, query, and SSH tools</h3>
+        <p>Use this whenever possible. <code>kv_api</code>, <code>kv_query</code>, and <code>kv_ssh</code> keep raw credentials in the daemon request path instead of returning them to the agent.</p>
+        <pre><code>kv_api(provider="openai",
+       path="/v1/chat/completions",
+       method="POST",
+       body={...})</code></pre>
+      </article>
+      <article class="mode-card">
+        <div class="mode-number">02</div>
+        <h3>Scoped command runs</h3>
+        <p>Use <code>kv run</code> for programs that genuinely need environment variables. It is useful, but higher risk than brokered tools because a subprocess can receive selected secrets.</p>
+        <pre><code>kv run --secret DATABASE_URL -- python app.py
+kv run --no-secrets -- npm test</code></pre>
+      </article>
+    </div>
+  </section>
+
+  <section class="section engine reveal" id="engine">
+    <div class="section-heading">
+      <h2>The product is six small engines working together.</h2>
+      <p>Each engine exists to keep the user in control while still letting agents do real work.</p>
+    </div>
+    <div class="engine-grid">
+      <article>
+        <span>Vault</span>
+        <h3>Encrypted local storage</h3>
+        <p>Secrets are stored encrypted on disk. The vault is meant to be usable by normal developers, not only security teams.</p>
+      </article>
+      <article>
+        <span>Unlock</span>
+        <h3>Human approval barrier</h3>
+        <p>The user unlocks the vault with a passphrase, with optional 2FA for stronger local control.</p>
+      </article>
+      <article>
+        <span>Broker</span>
+        <h3>Credentialed work without raw handoff</h3>
+        <p>Brokered tools let the daemon use credentials on behalf of the agent without returning the raw value.</p>
+      </article>
+      <article>
+        <span>Scope</span>
+        <h3>Only what the job needs</h3>
+        <p>Selected secret runs and capability paths reduce unnecessary credential exposure.</p>
+      </article>
+      <article>
+        <span>Audit</span>
+        <h3>Inspectable usage trail</h3>
+        <p>Usage is designed to be reviewable so teams can understand what happened later.</p>
+      </article>
+      <article>
+        <span>Guide</span>
+        <h3>Agent instructions that prefer safer tools</h3>
+        <p>Editor setup can teach agents to use brokered paths first and risky paths only when needed.</p>
+      </article>
+    </div>
+  </section>
+
+  <section class="section boundary reveal" id="boundary">
+    <div class="section-heading">
+      <h2>Trust comes from clear boundaries, not magic claims.</h2>
+      <p>kv improves the secret-handling path. It does not make every possible script safe.</p>
+    </div>
+    <div class="boundary-grid">
+      <article class="boundary-card good">
+        <h3>What kv is designed to protect</h3>
+        <ul>
+          <li>Secrets sitting in plaintext project files.</li>
+          <li>Raw keys being pasted into AI chat.</li>
+          <li>Agent workflows that only need API/query/SSH results.</li>
+          <li>Accidental exposure during normal local development.</li>
+        </ul>
+      </article>
+      <article class="boundary-card caution">
+        <h3>Where users still need care</h3>
+        <ul>
+          <li><code>kv run</code> can pass selected secrets to a subprocess.</li>
+          <li>A malicious script can still try to exfiltrate data if you approve a risky run.</li>
+          <li>Weak passphrases and unsafe credential sharing remain user risks.</li>
+          <li>Team/cloud sync is not a public production feature yet.</li>
+        </ul>
+      </article>
+    </div>
+  </section>
+
+  <section class="section start reveal" id="start">
+    <div class="start-card">
       <div>
-        <h1>Your AI agent uses your API keys.<br><span>It should never see them.</span></h1>
-        <p class="sub"><strong>kv</strong> encrypts your secrets and lets AI coding agents make API calls without possessing the keys. Like ssh-agent, but for API credentials.</p>
-        <div class="hero-ctas">
-          <a href="#install" class="btn-primary">Get Started</a>
-          <a href="https://github.com/SatishoBananamoto/kv-secrets" class="btn-outline">
-            <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/></svg>
-            GitHub
-          </a>
-        </div>
+        <h2>Start with one install and four kv commands.</h2>
+        <p>Use the hidden prompt form for real secrets. Avoid putting live keys directly into shell history.</p>
       </div>
-      <div class="terminal" id="hero-terminal">
-        <div class="terminal-bar">
-          <div class="dot dot-r"></div><div class="dot dot-y"></div><div class="dot dot-g"></div>
-          <span>terminal</span>
-        </div>
-        <pre id="typed-output"></pre>
+      <div class="terminal-card">
+        <div class="terminal-bar"><span></span><span></span><span></span></div>
+        <pre><code>pip install kv-secrets
+kv init
+kv set OPENAI_API_KEY
+kv unlock
+kv setup claude-code</code></pre>
+        <button class="copy-button" type="button" data-copy="pip install kv-secrets&#10;kv init&#10;kv set OPENAI_API_KEY&#10;kv unlock&#10;kv setup claude-code">Copy commands</button>
       </div>
     </div>
-  </div>
-</section>
+  </section>
 
-<!-- ── Works With ──────────────────────────────────────── -->
-<div class="works-with reveal">
-  <div class="container">
-    <p>Works with your favorite AI editor</p>
-    <div class="editor-badges">
-      <div class="editor-badge">
-        <svg viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
-        Cursor
-      </div>
-      <div class="editor-badge">
-        <svg viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg>
-        Claude Code
-      </div>
-      <div class="editor-badge">
-        <svg viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg>
-        VS Code
-      </div>
+  <section class="section proof reveal" id="proof">
+    <div class="proof-copy">
+      <h2>Built for launch trust.</h2>
+      <p>The website should be as honest as the product: local first, open source, security docs available, brokered tools preferred, and team features described only as future work until they exist.</p>
     </div>
-  </div>
-</div>
-
-<!-- ── Install ─────────────────────────────────────────── -->
-<section class="install reveal" id="install">
-  <div class="container">
-    <h2>Install in seconds</h2>
-    <div class="install-cmd">
-      <code>pip install kv-secrets</code>
-      <button class="copy-btn" id="copy-btn">Copy</button>
+    <div class="proof-list">
+      <a href="https://github.com/SatishoBananamoto/kv-secrets">Source on GitHub</a>
+      <a href="https://github.com/SatishoBananamoto/kv-secrets/blob/main/SECURITY.md">Security policy</a>
+      <a href="https://pypi.org/project/kv-secrets/">PyPI package</a>
+      <a href="guide.html">Human guide</a>
     </div>
-    <div class="quickstart">
-      <div class="qs-step">
-        <div class="num">1</div>
-        <code>kv init</code>
-        <p>Create vault (passphrase prompt)</p>
-      </div>
-      <div class="qs-step">
-        <div class="num">2</div>
-        <code>kv set OPENAI_API_KEY</code>
-        <p>Store your key</p>
-      </div>
-      <div class="qs-step">
-        <div class="num">3</div>
-        <code>kv unlock</code>
-        <p>Start the agent</p>
-      </div>
-      <div class="qs-step">
-        <div class="num">4</div>
-        <code>kv setup cursor</code>
-        <p>Connect your editor</p>
-      </div>
+  </section>
+
+  <section class="section team reveal" id="team">
+    <div class="team-panel">
+      <h2>Team vaults are next, not advertised as done.</h2>
+      <p>The local product is the launch surface. Team sync, roles, and managed sharing should stay in private beta language until the backend and security model are ready.</p>
+      <a class="button secondary" href="feedback.html">Join the team beta list</a>
     </div>
-  </div>
-</section>
-
-<!-- ── The Problem ─────────────────────────────────────── -->
-<section class="the-problem reveal" id="the-problem">
-  <div class="container">
-    <h2>The problem with every other approach</h2>
-    <div class="problem-grid">
-      <div class="problem-card">
-        <h3>.env files</h3>
-        <p>Agent reads the file. Key in context window. Leaked in logs.</p>
-      </div>
-      <div class="problem-card">
-        <h3>1Password SDK</h3>
-        <p>secrets.resolve() returns plaintext to agent memory. One prompt injection away.</p>
-      </div>
-      <div class="problem-card">
-        <h3>Paste in chat</h3>
-        <p>Key in conversation history. Visible to anyone with access. Forever.</p>
-      </div>
-    </div>
-    <p class="problem-bottom">Every approach gives the agent your key. <strong>kv doesn't.</strong></p>
-  </div>
-</section>
-
-<!-- ── How kv Works ────────────────────────────────────── -->
-<section class="how-kv-works reveal" id="how-kv-works">
-  <div class="container">
-    <h2>How kv keeps your keys safe</h2>
-    <div class="terminal">
-      <div class="terminal-bar">
-        <div class="dot dot-r"></div><div class="dot dot-y"></div><div class="dot dot-g"></div>
-        <span>kv_api flow</span>
-      </div>
-<pre>
-<span class="o">Agent:</span> <span class="v">"Call the OpenAI API"</span>
-  <span class="o">&#8595;</span>
-<span class="c">kv_api</span>(<span class="k">provider</span>=<span class="v">"openai"</span>, <span class="k">path</span>=<span class="v">"/v1/chat/completions"</span>, <span class="k">body</span>={...})
-  <span class="o">&#8595;</span>
-<span class="o">kv agent:</span> looks up <span class="k">OPENAI_API_KEY</span> <span class="o">&#8594;</span> adds auth header <span class="o">&#8594;</span> makes HTTP call
-  <span class="o">&#8595;</span>
-<span class="o">Agent gets:</span> <span class="v">response body</span> <span class="o">(key never appeared)</span>
-</pre>
-    </div>
-    <p class="how-kv-caption">The API key stays in the kv agent's memory. It never enters the AI agent's process, context window, logs, or filesystem. Same security model as ssh-agent.</p>
-  </div>
-</section>
-
-<!-- ── Features ────────────────────────────────────────── -->
-<section class="features reveal" id="features">
-  <div class="container">
-    <h2>Defense in depth for AI-powered development</h2>
-    <div class="features-grid">
-
-      <div class="feature-card">
-        <div class="feature-icon"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0110 0v4"/></svg></div>
-        <h3>Agent proxy (kv_api)</h3>
-        <p>Your AI agent makes API calls through the kv agent. The key never leaves. Like ssh-agent for API credentials. Built-in support for OpenAI, Anthropic, Google, GitHub + custom providers.</p>
-      </div>
-
-      <div class="feature-card">
-        <div class="feature-icon"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg></div>
-        <h3>Tamper-evident audit log</h3>
-        <p>Every API call logged with hash-chain integrity. <code>kv audit --verify</code> proves your logs weren't modified. No competitor has this.</p>
-      </div>
-
-      <div class="feature-card">
-        <div class="feature-icon"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 2l-2 2m-7.61 7.61a5.5 5.5 0 1 1-7.78 7.78 5.5 5.5 0 0 1 7.78-7.78zm0 0L15.5 7.5m0 0l3 3L22 7l-3-3m-3.5 3.5L19 4"/></svg></div>
-        <h3>Passphrase + 2FA</h3>
-        <p>Interface barrier that AI agents can't bypass. Interactive passphrase prompt + optional TOTP. Without it, the vault stays locked.</p>
-      </div>
-
-      <div class="feature-card">
-        <div class="feature-icon"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="20" height="20" rx="2"/><path d="M6 6h.01M6 10h.01M6 14h.01M10 6h8M10 10h8M10 14h8"/></svg></div>
-        <h3>Subprocess sandbox (kv_run)</h3>
-        <p>For databases, cloud SDKs, and legacy apps that need env vars. Read-only filesystem sandbox (bwrap), PID namespace isolation, network isolation, output redaction, file scanning.</p>
-      </div>
-
-      <div class="feature-card">
-        <div class="feature-icon"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg></div>
-        <h3>Client-agnostic</h3>
-        <p>Works with Claude Code, Cursor, VS Code &mdash; any MCP client. Passphrase protection ensures same security regardless of editor.</p>
-      </div>
-
-      <div class="feature-card">
-        <div class="feature-icon"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="4.93" y1="4.93" x2="19.07" y2="19.07"/></svg></div>
-        <h3>SSRF protection</h3>
-        <p>Custom providers validated against private IPs and non-HTTPS. DNS rebinding defense. Built-in providers are trusted. Your keys can't be redirected.</p>
-      </div>
-
-    </div>
-  </div>
-</section>
-
-<!-- ── Comparison ──────────────────────────────────────── -->
-<section class="comparison reveal" id="comparison">
-  <div class="container">
-    <h2>How kv compares</h2>
-    <div class="comparison-table-wrap">
-      <table class="comparison-table">
-        <thead>
-          <tr>
-            <th></th>
-            <th>kv</th>
-            <th>.env files</th>
-            <th>1Password CLI</th>
-            <th>AgentSecrets</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr>
-            <td>Key never enters agent</td>
-            <td>kv_api</td>
-            <td>No</td>
-            <td>No (SDK returns plaintext)</td>
-            <td>Yes</td>
-          </tr>
-          <tr>
-            <td>MCP native</td>
-            <td>Yes</td>
-            <td>No</td>
-            <td>No</td>
-            <td>Added later</td>
-          </tr>
-          <tr>
-            <td>Subprocess sandbox</td>
-            <td>kv_run</td>
-            <td>No</td>
-            <td>No</td>
-            <td>No</td>
-          </tr>
-          <tr>
-            <td>Tamper-evident audit</td>
-            <td>Yes</td>
-            <td>No</td>
-            <td>Enterprise</td>
-            <td>No</td>
-          </tr>
-          <tr>
-            <td>Passphrase + 2FA</td>
-            <td>Yes</td>
-            <td>No</td>
-            <td>Via app</td>
-            <td>No</td>
-          </tr>
-          <tr>
-            <td>Filesystem sandbox</td>
-            <td>bwrap</td>
-            <td>No</td>
-            <td>No</td>
-            <td>No</td>
-          </tr>
-          <tr>
-            <td>Free &amp; open source</td>
-            <td>Yes</td>
-            <td>Yes</td>
-            <td>No</td>
-            <td>Partial</td>
-          </tr>
-        </tbody>
-      </table>
-    </div>
-  </div>
-</section>
-
-<!-- ── Security Proof ──────────────────────────────────── -->
-<section class="security-proof">
-  <div class="container">
-    <h2>Battle-tested security</h2>
-    <div class="proof-grid">
-      <div class="proof-stat">
-        <div class="stat-number">17</div>
-        <div class="stat-label">attack vectors tested</div>
-      </div>
-      <div class="proof-stat">
-        <div class="stat-number">0</div>
-        <div class="stat-label">secrets leaked</div>
-      </div>
-      <div class="proof-stat">
-        <div class="stat-number">6</div>
-        <div class="stat-label">defense layers</div>
-      </div>
-    </div>
-    <p class="proof-caption">Adversarial testing by the AI agent itself &mdash; with full Bash access and direct daemon connection. <a href="https://github.com/SatishoBananamoto/kv-secrets/blob/main/docs/adversarial-testing.md">Read the full report.</a></p>
-  </div>
-</section>
-
-<!-- ── Pricing ─────────────────────────────────────────── -->
-<section class="pricing reveal" id="pricing">
-  <div class="container">
-    <h2>Simple pricing</h2>
-    <p class="sub">Free for individuals. One flat price for teams.</p>
-    <div class="pricing-grid">
-
-      <div class="price-card">
-        <h3>Free</h3>
-        <div class="price-amount">$0</div>
-        <div class="price-period">forever</div>
-        <ul class="price-features">
-          <li>Agent proxy for API calls (kv_api)</li>
-          <li>Filesystem sandbox (bwrap)</li>
-          <li>Tamper-evident audit logging</li>
-          <li>ChaCha20-Poly1305 encryption</li>
-          <li>Dynamic provider registry</li>
-          <li>MCP integration (Cursor, Claude Code, VS Code)</li>
-          <li>Unlimited secrets, environments, providers</li>
-        </ul>
-        <a href="#install" class="price-cta price-cta-primary">Install Now</a>
-      </div>
-
-      <div class="price-card featured">
-        <div class="badge">COMING SOON</div>
-        <h3>Team</h3>
-        <div class="price-amount">$15 <small>/team/mo</small></div>
-        <div class="price-period">14-day free trial</div>
-        <ul class="price-features">
-          <li>Everything in Free</li>
-          <li>Zero-knowledge cloud sync</li>
-          <li>Team management with RBAC</li>
-          <li>Scoped CI/CD API tokens</li>
-          <li>Audit logs</li>
-          <li>Priority support</li>
-        </ul>
-        <div style="text-align:center">
-          <p style="color:var(--text-muted);font-size:0.85rem;margin-bottom:4px;">Get notified when teams launch:</p>
-          <form class="waitlist-form" id="waitlist-form">
-            <input type="email" placeholder="you@company.com" required aria-label="Email for team waitlist">
-            <button type="submit">Notify me</button>
-          </form>
-          <p class="waitlist-msg" id="waitlist-msg">You're on the list!</p>
-        </div>
-      </div>
-
-    </div>
-  </div>
-</section>
-
-<!-- ── Trust Strip ────────────────────────────────────────── -->
-<section class="trust-strip reveal">
-  <div class="container">
-    <div class="trust-badges">
-      <span class="trust-badge trust-badge--green">195 tests passing</span>
-      <a href="https://pypi.org/project/kv-secrets/" style="text-decoration:none"><span class="trust-badge trust-badge--blue">v0.2.1</span></a>
-      <span class="trust-badge trust-badge--blue">Python 3.10+</span>
-      <a href="https://github.com/SatishoBananamoto/kv-secrets/blob/main/LICENSE" style="text-decoration:none"><span class="trust-badge trust-badge--gray">MIT License</span></a>
-    </div>
-    <p class="trust-text">Open source (MIT) &middot; ChaCha20-Poly1305 encryption &middot; <a href="https://github.com/SatishoBananamoto/kv-secrets/blob/main/SECURITY.md">Security policy</a></p>
-  </div>
-</section>
-
+  </section>
 </main>
 
-<!-- ── Footer ──────────────────────────────────────────── -->
-<footer>
-  <div class="container">
-    <div class="footer-inner">
-      <div class="footer-brand"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-3px;margin-right:4px"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0110 0v4"/></svg>kv</div>
-      <div class="footer-links">
-        <a href="https://github.com/SatishoBananamoto/kv-secrets">GitHub</a>
-        <a href="https://pypi.org/project/kv-secrets/">PyPI</a>
-        <a href="https://github.com/SatishoBananamoto/kv-secrets/blob/main/SECURITY.md">Security</a>
-        <a href="https://github.com/SatishoBananamoto/kv-secrets#readme">Docs</a>
-      </div>
-      <p class="footer-tagline">Made for developers who don't paste API keys into AI chat.</p>
-    </div>
+<footer class="site-footer">
+  <div>
+    <a class="brand footer-brand" href="/">
+      <span class="brand-mark" aria-hidden="true">kv</span>
+      <span>kvsecure</span>
+    </a>
+    <p>Local encrypted secrets for AI-assisted development.</p>
   </div>
+  <nav>
+    <a href="guide.html">Guide</a>
+    <a href="faq.html">FAQ</a>
+    <a href="feedback.html">Feedback</a>
+    <a href="https://github.com/SatishoBananamoto/kv-secrets">GitHub</a>
+  </nav>
 </footer>
 
-<!-- ── Scripts ─────────────────────────────────────────── -->
-<script>
-// ── Typing animation for hero terminal ──
-(function() {
-  const lines = [
-    { text: '$ ', cls: 'p', delay: 0 },
-    { text: 'pip install', cls: 'c', delay: 0 },
-    { text: ' kv-secrets', cls: '', delay: 0 },
-    { text: '\n', delay: 300 },
-    { text: '$ ', cls: 'p', delay: 200 },
-    { text: 'kv init', cls: 'c', delay: 0 },
-    { text: '\n', delay: 200 },
-    { text: '  Passphrase: ', cls: 'o', delay: 100, instant: true },
-    { text: '********', cls: 'v', delay: 0 },
-    { text: '\n', delay: 200 },
-    { text: '  vault created\n\n', cls: 'v', delay: 100, instant: true },
-    { text: '$ ', cls: 'p', delay: 200 },
-    { text: 'kv set', cls: 'c', delay: 0 },
-    { text: ' ', cls: '', delay: 0 },
-    { text: 'OPENAI_API_KEY', cls: 'k', delay: 0 },
-    { text: '\n', delay: 200 },
-    { text: '  Value: ', cls: 'o', delay: 100, instant: true },
-    { text: '********', cls: 'v', delay: 0 },
-    { text: '\n', delay: 100 },
-    { text: '  OPENAI_API_KEY saved [encrypted]\n\n', cls: 'v', delay: 100, instant: true },
-    { text: '$ ', cls: 'p', delay: 200 },
-    { text: 'kv unlock', cls: 'c', delay: 0 },
-    { text: '\n', delay: 200 },
-    { text: '  Passphrase: ', cls: 'o', delay: 100, instant: true },
-    { text: '********', cls: 'v', delay: 0 },
-    { text: '\n', delay: 200 },
-    { text: '  vault unlocked\n\n', cls: 'v', delay: 100, instant: true },
-    { text: '  AI agent can now make API calls.\n', cls: 'o', delay: 50, instant: true },
-    { text: '  Your keys never leave this process.', cls: 'o', delay: 0, instant: true },
-  ];
-
-  const out = document.getElementById('typed-output');
-  if (!out) return;
-
-  // Respect reduced motion
-  if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
-    // Just dump everything instantly
-    lines.forEach(l => {
-      if (l.text === '\n' || l.text === '\n\n') {
-        out.appendChild(document.createTextNode(l.text));
-      } else {
-        const span = document.createElement('span');
-        if (l.cls) span.className = l.cls;
-        span.textContent = l.text;
-        out.appendChild(span);
-      }
-    });
-    return;
-  }
-
-  let lineIdx = 0;
-  let charIdx = 0;
-  let currentSpan = null;
-  const cursor = document.createElement('span');
-  cursor.className = 'cursor-blink';
-  cursor.textContent = '\u00A0';
-  out.appendChild(cursor);
-
-  function typeNext() {
-    if (lineIdx >= lines.length) {
-      cursor.remove();
-      return;
-    }
-    const seg = lines[lineIdx];
-
-    // Newlines
-    if (seg.text === '\n' || seg.text === '\n\n') {
-      out.insertBefore(document.createTextNode(seg.text), cursor);
-      lineIdx++;
-      charIdx = 0;
-      currentSpan = null;
-      setTimeout(typeNext, seg.delay || 100);
-      return;
-    }
-
-    // Instant output lines (command responses)
-    if (seg.instant) {
-      const span = document.createElement('span');
-      if (seg.cls) span.className = seg.cls;
-      span.textContent = seg.text;
-      out.insertBefore(span, cursor);
-      lineIdx++;
-      charIdx = 0;
-      currentSpan = null;
-      setTimeout(typeNext, seg.delay || 50);
-      return;
-    }
-
-    // Typed characters
-    if (!currentSpan) {
-      currentSpan = document.createElement('span');
-      if (seg.cls) currentSpan.className = seg.cls;
-      out.insertBefore(currentSpan, cursor);
-    }
-
-    if (charIdx < seg.text.length) {
-      currentSpan.textContent += seg.text[charIdx];
-      charIdx++;
-      setTimeout(typeNext, 35 + Math.random() * 25);
-    } else {
-      lineIdx++;
-      charIdx = 0;
-      currentSpan = null;
-      setTimeout(typeNext, seg.delay || 0);
-    }
-  }
-
-  // Start after a short delay
-  setTimeout(typeNext, 600);
-})();
-
-// ── Nav toggle + Copy button (moved from inline handlers) ──
-(function() {
-  var toggle = document.getElementById('nav-toggle');
-  var navLinks = document.querySelector('.nav-links');
-  if (toggle && navLinks) {
-    toggle.addEventListener('click', function() {
-      var open = navLinks.classList.toggle('open');
-      toggle.setAttribute('aria-expanded', open);
-    });
-  }
-  var copyBtn = document.getElementById('copy-btn');
-  if (copyBtn) {
-    copyBtn.addEventListener('click', function() {
-      navigator.clipboard.writeText('pip install kv-secrets');
-      copyBtn.textContent = 'Copied!';
-      setTimeout(function() { copyBtn.textContent = 'Copy'; }, 1500);
-    });
-  }
-})();
-
-// ── Scroll reveal with IntersectionObserver ──
-(function() {
-  if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
-  const observer = new IntersectionObserver(function(entries) {
-    entries.forEach(function(entry) {
-      if (entry.isIntersecting) {
-        entry.target.classList.add('visible');
-        observer.unobserve(entry.target);
-      }
-    });
-  }, { threshold: 0.1 });
-
-  document.querySelectorAll('.reveal').forEach(function(el) {
-    observer.observe(el);
-  });
-})();
-
-// ── Team waitlist form ──
-(function() {
-  var form = document.getElementById('waitlist-form');
-  var msg = document.getElementById('waitlist-msg');
-  if (!form) return;
-  form.addEventListener('submit', function(e) {
-    e.preventDefault();
-    var email = form.querySelector('input[type="email"]').value;
-    fetch('https://formsubmit.co/ajax/support@kvsecure.com', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
-      body: JSON.stringify({ email: email, _subject: 'Team Waitlist: ' + email, type: 'waitlist' })
-    }).then(function(res) {
-      if (!res.ok) throw new Error('Server error');
-      form.style.display = 'none';
-      msg.style.display = 'block';
-    }).catch(function() {
-      msg.textContent = 'Something went wrong — email support@kvsecure.com instead.';
-      msg.style.color = 'var(--yellow)';
-      msg.style.display = 'block';
-    });
-  });
-})();
-</script>
-
+<script src="site.js"></script>
 </body>
 </html>
