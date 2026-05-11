@@ -11,6 +11,9 @@ The static kvsecure.com site was rewritten into a trust-first launch surface:
 - The hero demo now has a manual switch for `Normal path` and `With kv`, showing both the weak raw-key path and the kv-internal broker path.
 - The hero demo animation was changed from absolute overlay ribbons/tokens to contained lane tracks so moving labels cannot overlap cards or boundary notes.
 - The hero demo animation was reworked again from an image-generated concept into a broker-chamber visual with contained beams, a central kv boundary, and separate normal/kv states.
+- A live browser QA pass found and fixed two site issues:
+  - `site.js` now catches clipboard write rejection, tries a legacy copy fallback, and shows `Copy unavailable` instead of throwing an unhandled promise.
+  - `styles.css` now overrides compact feedback-card heading spacing so labels like `Report a bug` and `Request a feature` keep visible word separation.
 
 ## Product Story To Preserve
 
@@ -40,12 +43,15 @@ Avoid these claims:
 - After the hero demo rework: `node --check site.js`, Python HTML parser, local link check, stale-claim search, non-ASCII scan, `git diff --check`, and local HTTP asset checks for `/`, `styles.css`, and `site.js`.
 - After fixing animation overlap: screenshot-style renders were generated for desktop `With kv` and `Normal path` modes at `/tmp/kvsecure-kv-current.png` and `/tmp/kvsecure-normal-current.png`.
 - After the broker-chamber rework: generated concept image at `/home/satishocoin/.codex/generated_images/019dada6-8635-7292-9e83-a7139de88e6d/ig_0a877fc0f555025f0169f912a0fae4819194d563df602d8bbf.png`; screenshot-style renders at `/tmp/kvsecure-kv-stage-beams.png` and `/tmp/kvsecure-normal-stage-beams2.png`.
+- 2026-05-11 live QA after commit `1f34bc8`: GitHub Pages source is `main` at `/`, latest Pages build for `1f34bc8e3fff4de7ef8b6209eb0e41666c782eb2` reported `built`; `https://kvsecure.com/?v=1f34bc8` loaded in headless Chromium with no console issues, no network failures, no 4xx/5xx asset responses, no framework overlay, and no horizontal overflow at desktop or mobile widths. Screenshots were captured under `/tmp/codex-kvsecure-live-qa/`.
+- Focused live interaction smoke after `1f34bc8`: hero toggles switched to `Normal path` and `With kv`; denied clipboard write showed `Copy unavailable` with no unhandled rejection; FAQ accordion opened with `aria-expanded="true"` and visible answer; mobile nav opened; mobile `Normal path` mode activated with zero horizontal overflow.
 
 ## Open Next Step
 
-Do a real browser visual review after GitHub Pages updates:
+The GitHub Pages browser review is complete for commit `1f34bc8`. For future
+site edits, rerun the same live QA path after Pages builds:
 
 1. Open the homepage on desktop and mobile widths.
 2. Check both hero demo modes: `Normal path` and `With kv`.
 3. Check nav, copy button, FAQ accordion, and feedback form layout.
-4. If CDN cache shows the old animation, reload with a cache-busted URL such as `https://kvsecure.com/?v=<commit>`.
+4. If CDN cache shows stale assets, reload with a cache-busted URL such as `https://kvsecure.com/?v=<commit>`.
