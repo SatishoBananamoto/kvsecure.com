@@ -8,6 +8,8 @@ The static kvsecure.com site was rewritten into a trust-first launch surface:
 - `styles.css` is the shared visual system for the site.
 - `site.js` handles mobile nav, FAQ accordion, copy button, reveal states, and the hero flow event loop.
 - `guide.html`, `faq.html`, and `feedback.html` were refreshed to remove stale launch claims and match the homepage story.
+- `tools/check_site.py` and the `Site Checks` GitHub Actions workflow guard the static launch pages against broken local links and overbroad security/availability claims.
+- `LICENSE` now gives the public site repo a detected MIT license.
 - The hero demo now has a manual switch for `Normal path` and `With kv`, showing both the weak raw-key path and the kv-internal broker path.
 - The hero demo animation was changed from absolute overlay ribbons/tokens to contained lane tracks so moving labels cannot overlap cards or boundary notes.
 - The hero demo animation was reworked again from an image-generated concept into a broker-chamber visual with contained beams, a central kv boundary, and separate normal/kv states.
@@ -45,6 +47,7 @@ Avoid these claims:
 - After the broker-chamber rework: generated concept image at `/home/satishocoin/.codex/generated_images/019dada6-8635-7292-9e83-a7139de88e6d/ig_0a877fc0f555025f0169f912a0fae4819194d563df602d8bbf.png`; screenshot-style renders at `/tmp/kvsecure-kv-stage-beams.png` and `/tmp/kvsecure-normal-stage-beams2.png`.
 - 2026-05-11 live QA after commit `1f34bc8`: GitHub Pages source is `main` at `/`, latest Pages build for `1f34bc8e3fff4de7ef8b6209eb0e41666c782eb2` reported `built`; `https://kvsecure.com/?v=1f34bc8` loaded in headless Chromium with no console issues, no network failures, no 4xx/5xx asset responses, no framework overlay, and no horizontal overflow at desktop or mobile widths. Screenshots were captured under `/tmp/codex-kvsecure-live-qa/`.
 - Focused live interaction smoke after `1f34bc8`: hero toggles switched to `Normal path` and `With kv`; denied clipboard write showed `Copy unavailable` with no unhandled rejection; FAQ accordion opened with `aria-expanded="true"` and visible answer; mobile nav opened; mobile `Normal path` mode activated with zero horizontal overflow.
+- 2026-07-03 public-readiness audit: `node --check site.js`, HTML parser over all four pages, secret-pattern scan, claim scan, source-claim spot checks against `/home/satishocoin/kv-secrets`, and local Chromium CDP QA at desktop/mobile widths passed. The local QA exercised both hero demo modes, clipboard rejection fallback, FAQ accordion, mobile nav, feedback form required fields, and horizontal overflow checks. Screenshots and JSON result were written under `/tmp/codex-kvsecure-qa/`.
 
 ## Open Next Step
 

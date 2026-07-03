@@ -36,6 +36,7 @@ Run these before publishing site edits:
 
 ```bash
 node --check site.js
+python3 tools/check_site.py
 python3 -m http.server 8123
 ```
 
@@ -49,9 +50,9 @@ Then check:
 - `/site.js`
 
 For HTML structure, asset references, and stale claims, use the checklist in
-[.graft](.graft). For hero or layout changes, do a browser visual review at
-desktop and mobile widths, including both hero demo modes: `Normal path` and
-`With kv`.
+[.graft](.graft) plus `python3 tools/check_site.py`. For hero or layout changes,
+do a browser visual review at desktop and mobile widths, including both hero
+demo modes: `Normal path` and `With kv`.
 
 ## Deployment Note
 
